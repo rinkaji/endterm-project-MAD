@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/data/data.dart';
+import 'package:myapp/screens/homescreen/homescreen_card.dart';
 
-class Homescreen extends StatelessWidget {
+class Homescreen extends StatefulWidget {
   Homescreen({Key? key}) : super(key: key);
 
-  List<String> category = [
-    "Block A",
-    "Block B",
-    "Block C",
-  ];
+  @override
+  State<Homescreen> createState() => _HomescreenState();
+}
+
+class _HomescreenState extends State<Homescreen> {
+  void delete(item){
+    setState(() {
+      category.remove(item);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,22 +35,11 @@ class Homescreen extends StatelessWidget {
         itemCount: category.length,
         itemBuilder: (BuildContext context, int index) {
           var item = category[index];
-          return ListTile(
-            title: Text(item),
-            trailing: PopupMenuButton(
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  child: Text("edit"),
-                ),
-                PopupMenuItem(
-                  onTap: () => print("mamammia"),
-                  child: Text("delete"),
-                ),
-              ],
-            ),
-          );
+          return HomescreenCard(item: item, deleteItem: delete,);
         },
       ),
     );
   }
 }
+
+
