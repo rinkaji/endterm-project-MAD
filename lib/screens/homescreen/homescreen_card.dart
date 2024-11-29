@@ -12,21 +12,36 @@ class HomescreenCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        title: Text(item),
-        trailing: PopupMenuButton(
-          itemBuilder: (context) => [
-            PopupMenuItem(
-              child: Text("edit"),
+    return Padding(
+      padding: const EdgeInsets.only(
+        bottom: 8,
+        left: 12,
+        right: 12,
+      ),
+      child: SizedBox(
+        height: 100,
+        child: Card(
+          child: ListTile(
+            title: Text(item),
+            trailing: PopupMenuButton(
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  onTap: () => editItem(),
+                  child: Text("edit"),
+                ),
+                PopupMenuItem(
+                  onTap: () => deleteItem(item),
+                  child: Text("delete"),
+                ),
+              ],
             ),
-            PopupMenuItem(
-              onTap: () => deleteItem(item),
-              child: Text("delete"),
-            ),
-          ],
+          ),
         ),
       ),
     );
+  }
+  
+  editItem() {
+    
   }
 }

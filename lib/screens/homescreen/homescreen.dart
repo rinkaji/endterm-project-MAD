@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/data/data.dart';
+import 'package:myapp/screens/createscreen/createscreen.dart';
 import 'package:myapp/screens/homescreen/homescreen_card.dart';
 
 class Homescreen extends StatefulWidget {
@@ -10,6 +11,7 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
+  
   void delete(item){
     setState(() {
       category.remove(item);
@@ -22,7 +24,7 @@ class _HomescreenState extends State<Homescreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
       floatingActionButton: FloatingActionButton(
         shape: CircleBorder(),
-        onPressed: () {},
+        onPressed: ()=> Navigator.push(context, MaterialPageRoute(builder: (context)=>Createscreen())),
         child: Icon(
           Icons.add,
           size: 45,
