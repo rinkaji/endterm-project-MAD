@@ -36,7 +36,7 @@ class HomescreenCard extends StatelessWidget {
                   child: Text("edit"),
                 ),
                 PopupMenuItem(
-                  onTap: () => deleteItem(item),
+                  onTap: () => deleteItem(index),
                   child: Text("delete"),
                 ),
               ],

@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/data/data.dart';
+import 'package:myapp/screens/add_participant_screen/addParticipantScreen.dart';
 
 class Createscreen extends StatelessWidget {
-  const Createscreen({super.key});
+  Createscreen({super.key, required this.addcategory});
+
+  var input = TextEditingController();
+  Function addcategory;
+  var id = category.length;
 
   @override
   Widget build(BuildContext context) {
@@ -10,7 +16,7 @@ class Createscreen extends StatelessWidget {
         toolbarHeight: 100,
         centerTitle: true,
         leading: IconButton(
-          onPressed: ()=>Navigator.pop(context),
+          onPressed: () => Navigator.pop(context),
           icon: Icon(
             Icons.arrow_back,
           ),
@@ -20,7 +26,14 @@ class Createscreen extends StatelessWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop,
+            onPressed: () {
+              if(input.text.isNotEmpty){
+                addcategory(input.text, id);
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => Addparticipantscreen(catID: id,)),
+                );
+              }
+            },
             child: Text("Create"),
           ),
         ],
@@ -38,6 +51,7 @@ class Createscreen extends StatelessWidget {
               height: 8,
             ),
             TextField(
+              controller: input,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
               ),

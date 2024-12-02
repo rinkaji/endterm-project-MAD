@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/data/data.dart';
+import 'package:myapp/model/model.dart';
 import 'package:myapp/screens/createscreen/createscreen.dart';
 import 'package:myapp/screens/homescreen/homescreen_card.dart';
 
@@ -11,15 +12,24 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
-  
-  void delete(item){
+  void delete(id) {
     setState(() {
-      category.remove(item);
+      category.removeAt(id);
+      print(category.length);
     });
   }
-  void edit(index, edited){
+
+  void edit(index, edited) {
     setState(() {
-      category[index] = edited;
+      category[index].name = edited;
+    });
+  }
+
+  void add(added, id) {
+    setState(() {
+      category.add(
+        Category(id: id, name: added),
+      );
     });
   }
 
@@ -29,13 +39,19 @@ class _HomescreenState extends State<Homescreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
       floatingActionButton: FloatingActionButton(
         shape: CircleBorder(),
-        onPressed: ()=> Navigator.push(context, MaterialPageRoute(builder: (context)=>Createscreen())),
+        onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => Createscreen(
+                      addcategory: add,
+                    ))),
         child: Icon(
           Icons.add,
           size: 45,
         ),
       ),
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         centerTitle: true,
         toolbarHeight: 100,
         title: Text("Categories"),
@@ -43,12 +59,15 @@ class _HomescreenState extends State<Homescreen> {
       body: ListView.builder(
         itemCount: category.length,
         itemBuilder: (BuildContext context, int index) {
-          var item = category[index];
-          return HomescreenCard(item: item, deleteItem: delete, editItem: edit, index: index,);
+          var item = category[index].name;
+          return HomescreenCard(
+            item: item,
+            deleteItem: delete,
+            editItem: edit,
+            index: index,
+          );
         },
       ),
     );
   }
 }
-
-
