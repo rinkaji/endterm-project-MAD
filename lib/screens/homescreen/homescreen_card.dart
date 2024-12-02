@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/data/data.dart';
 
 class HomescreenCard extends StatelessWidget {
   HomescreenCard({
     super.key,
     required this.item,
     required this.deleteItem,
+    required this.editItem,
+    required this.index,
   });
 
   final String item;
   Function deleteItem;
+  Function editItem;
+  int index;
+  var categoryName;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +32,7 @@ class HomescreenCard extends StatelessWidget {
             trailing: PopupMenuButton(
               itemBuilder: (context) => [
                 PopupMenuItem(
-                  onTap: () => editItem(),
+                  onTap: () => openDialog(context),
                   child: Text("edit"),
                 ),
                 PopupMenuItem(
@@ -40,8 +46,22 @@ class HomescreenCard extends StatelessWidget {
       ),
     );
   }
-  
-  editItem() {
-    
+  openDialog(ctx) {
+    showDialog(context: ctx, builder: (_)=>AlertDialog(
+      title: Text("edit"),
+      content: TextField(
+        controller:  categoryName = TextEditingController(text: item),
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+        ),
+      ),
+      actions: [
+        ElevatedButton(onPressed: ()=>Navigator.pop(ctx), child: Text("cancel")),
+        ElevatedButton(onPressed: (){
+          editItem(index, categoryName.text.toString());
+          Navigator.pop(ctx);
+        }, child: Text("edit")),
+      ],
+    ));
   }
 }

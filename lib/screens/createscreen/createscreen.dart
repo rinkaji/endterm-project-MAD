@@ -10,7 +10,7 @@ class Createscreen extends StatelessWidget {
         toolbarHeight: 100,
         centerTitle: true,
         leading: IconButton(
-          onPressed: () {},
+          onPressed: ()=>Navigator.pop(context),
           icon: Icon(
             Icons.arrow_back,
           ),

@@ -17,6 +17,11 @@ class _HomescreenState extends State<Homescreen> {
       category.remove(item);
     });
   }
+  void edit(index, edited){
+    setState(() {
+      category[index] = edited;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,13 +36,15 @@ class _HomescreenState extends State<Homescreen> {
         ),
       ),
       appBar: AppBar(
+        centerTitle: true,
+        toolbarHeight: 100,
         title: Text("Categories"),
       ),
       body: ListView.builder(
         itemCount: category.length,
         itemBuilder: (BuildContext context, int index) {
           var item = category[index];
-          return HomescreenCard(item: item, deleteItem: delete,);
+          return HomescreenCard(item: item, deleteItem: delete, editItem: edit, index: index,);
         },
       ),
     );
