@@ -1,58 +1,73 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/data/data.dart';
+import 'package:myapp/model/model.dart';
 import 'package:myapp/screens/mainscreen/mainscreen.dart';
 
-class HomescreenCard extends StatelessWidget {
-  HomescreenCard({
+class HomeScreenCard extends StatelessWidget {
+  HomeScreenCard({
     super.key,
     required this.item,
     required this.deleteItem,
     required this.editItem,
     required this.index,
+    required this.itemColor
   });
 
-  final String item;
+  final Category item;
   Function deleteItem;
   Function editItem;
   int index;
   var categoryName;
-
+  Color itemColor;
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        bottom: 8,
-        left: 12,
-        right: 12,
-      ),
-      child: SizedBox(
-        height: 100,
-        child: Card(
-          child: ListTile(
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => Mainscreen(catID: index, catName: item,),
-                ),
-              );
-            },
-            title: Text(item),
-            trailing: PopupMenuButton(
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  onTap: () => openDialog(context),
-                  child: Text("edit"),
-                ),
-                PopupMenuItem(
-                  onTap: () => deleteItem(index),
-                  child: Text("delete"),
-                ),
-              ],
+    return GestureDetector(
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => MainScreen(
+                catID: index,
+                catName: item.name,
+                catTheme: item.color,
+              ),
             ),
-          ),
-        ),
-      ),
-    );
+          );
+        },
+        child: GridTile(
+            header: GridTileBar(
+              title: Text(
+                item.name,
+                style: TextStyle(fontSize: 20, color: Colors.black),
+              ),
+              trailing: PopupMenuButton(
+                  color: Colors.white,
+                  iconColor: Colors.black,
+                  padding: EdgeInsets.all(0),
+                  itemBuilder: (BuildContext context) {
+                    return [
+                      PopupMenuItem(
+                        height: 30,
+                        onTap: () => openDialog(context),
+                        child: Text(
+                          "Edit",
+                          style: TextStyle(
+                              color: Colors.black, fontWeight: FontWeight.w400),
+                        ),
+                      ),
+                      PopupMenuItem(
+                        height: 30,
+                        onTap: () => deleteItem(index),
+                        child: Text("Delete",
+                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.w400)),
+                      ),
+                    ];
+                  }),
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                  color: item.color,
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
+            ))
+        );
   }
 
   openDialog(ctx) {
@@ -61,7 +76,8 @@ class HomescreenCard extends StatelessWidget {
         builder: (_) => AlertDialog(
               title: Text("edit"),
               content: TextField(
-                controller: categoryName = TextEditingController(text: item),
+                controller: categoryName =
+                    TextEditingController(text: item.name),
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                 ),
