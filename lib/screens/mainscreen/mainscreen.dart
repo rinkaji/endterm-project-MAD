@@ -5,25 +5,38 @@ import 'package:myapp/screens/homescreen/homescreen.dart';
 import 'package:myapp/screens/mainscreen/mainscreen_tile.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class Mainscreen extends StatefulWidget {
-  Mainscreen({super.key, required this.catID, required this.catName});
+class MainScreen extends StatefulWidget {
+  MainScreen(
+      {super.key,
+      required this.catID,
+      required this.catName,
+      required this.catTheme});
 
   int catID;
   var catName;
-
+  var catTheme;
   @override
-  State<Mainscreen> createState() => _MainscreenState();
+  State<MainScreen> createState() => _MainScreenState();
 }
 
-class _MainscreenState extends State<Mainscreen> {
+class _MainScreenState extends State<MainScreen> {
+  var today = DateTime.now();
+  void selectedDay(DateTime day, DateTime focusedDay) {
+    setState(() {
+      today = day;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final filteredParticipant =
         participant.where((person) => person.catID == widget.catID).toList();
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: widget.catTheme,
           leading: IconButton(
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute(
@@ -44,16 +57,22 @@ class _MainscreenState extends State<Mainscreen> {
         body: Column(
           children: [
             Container(
-              child: TableCalendar(
-                headerStyle: HeaderStyle(
-                  formatButtonVisible: false,
-                  titleCentered: true,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TableCalendar(
+                  rowHeight: 43,
+                  headerStyle: HeaderStyle(
+                      formatButtonVisible: false, titleCentered: true),
+                  availableGestures: AvailableGestures.all,
+                  selectedDayPredicate: (day) => isSameDay(day, today),
+                  focusedDay: today,
+                  firstDay: DateTime.utc(2010, 10, 16),
+                  lastDay: DateTime(2030, 3, 14),
+                  onDaySelected: selectedDay,
                 ),
-                focusedDay: DateTime.now(),
-                firstDay: DateTime.utc(2010, 10, 16),
-                lastDay: DateTime(2030, 3, 14),
               ),
             ),
+            
             TabBar(
               dividerColor: Colors.transparent,
               tabs: [
@@ -73,7 +92,7 @@ class _MainscreenState extends State<Mainscreen> {
                     itemCount: filteredParticipant.length,
                     itemBuilder: (BuildContext context, int index) {
                       var filtered = filteredParticipant[index];
-                      return mainscreenTile(filtered: filtered);
+                      return MainScreenTile(filtered: filtered);
                     },
                   ),
                 ],

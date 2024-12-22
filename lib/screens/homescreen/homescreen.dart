@@ -1,4 +1,6 @@
+
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/data/data.dart';
 import 'package:myapp/model/model.dart';
 import 'package:myapp/screens/createscreen/createscreen.dart';
@@ -37,40 +39,44 @@ class _HomescreenState extends State<Homescreen> {
   Widget build(BuildContext context) {
     print(category.length);
     return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
-      floatingActionButton: FloatingActionButton(
-        shape: CircleBorder(),
-        onPressed: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => Createscreen(
-              addcategory: add,
+        floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
+        floatingActionButton: FloatingActionButton(
+          shape: const CircleBorder(),
+          elevation: 3,
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => CreateScreen(
+                addcategory: add,
+              ),
             ),
           ),
+          backgroundColor: Colors.white,
+          child: const Icon(
+            Icons.add,
+            size: 45,
+            color: Color.fromRGBO(33, 37, 255, 1),
+          ),
         ),
-        child: Icon(
-          Icons.add,
-          size: 45,
+        appBar: AppBar(
+          shadowColor: Colors.black.withValues(alpha: 1),
+          elevation: 0.1,
+          automaticallyImplyLeading: false,
+          title: Text("Asanna",
+              style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w500, fontSize: 24)),
         ),
-      ),
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        centerTitle: true,
-        toolbarHeight: 100,
-        title: Text("Categories"),
-      ),
-      body: ListView.builder(
-        itemCount: category.length,
-        itemBuilder: (BuildContext context, int index) {
-          var item = category[index].name;
-          return HomescreenCard(
-            item: item,
-            deleteItem: delete,
-            editItem: edit,
-            index: index,
-          );
-        },
-      ),
-    );
+        body: GridView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                mainAxisSpacing: 5,
+                crossAxisSpacing: 5,
+                childAspectRatio: 3 / 2,
+                crossAxisCount: 2),
+            itemCount: category.length,
+            itemBuilder: (BuildContext context, int index) {
+              final item = category[index];
+              return HomeScreenCard(item: item, deleteItem: delete, editItem: edit, index: index, itemColor: item.color,);
+            }));
   }
 }

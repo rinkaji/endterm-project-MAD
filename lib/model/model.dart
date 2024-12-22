@@ -1,15 +1,19 @@
+import 'package:flutter/material.dart';
+import 'package:myapp/model/theme_selection.dart';
+
 class Participant {
   late int catID;
-  late String name; 
-
+  late String name;
 
   Participant({required this.catID, required this.name});
 }
 
-class Category{
+class Category {
   late int id;
   late String name;
+  late ThemeSelection theme;
 
+  Category({required this.id, required this.name, this.theme = ThemeSelection.Sky});
 
-  Category({required this.id, required this.name});
+  Color get color => theme.color;
 }

@@ -3,69 +3,76 @@ import 'package:myapp/data/data.dart';
 import 'package:myapp/model/model.dart';
 import 'package:myapp/screens/mainscreen/mainscreen.dart';
 
-class Addparticipantscreen extends StatefulWidget {
-  Addparticipantscreen({
-    super.key,
-    required this.catID,
-    required this.catName
-  });
+class AddParticipantScreen extends StatefulWidget {
+  AddParticipantScreen({super.key, required this.catID, required this.catName, required this.catTheme});
 
   var catID;
   var catName;
+  var catTheme;
+
   @override
-  State<Addparticipantscreen> createState() => _AddparticipantscreenState();
+  State<AddParticipantScreen> createState() => _AddParticipantScreenState();
 }
 
-class _AddparticipantscreenState extends State<Addparticipantscreen> {
+class _AddParticipantScreenState extends State<AddParticipantScreen> {
   var personCtrl = TextEditingController();
-
+  Color btnColor = Colors.grey.shade300;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 100,
-        centerTitle: true,
+        foregroundColor: Colors.black,
+        backgroundColor: widget.catTheme,
+        
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
           icon: Icon(
             Icons.arrow_back,
           ),
         ),
-        title: Text("Add Participant"),
+        title: Text(
+          "Create Group",
+          style: TextStyle(fontWeight: FontWeight.w500, fontSize: 20),
+        ),
         actions: [
           TextButton(
             onPressed: () => tempParticipant.isEmpty
                 ? Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (_) => Mainscreen(catID: widget.catID, catName: widget.catName,),
+                      builder: (_) => MainScreen(
+                        catID: widget.catID,
+                        catName: widget.catName,
+                        catTheme:widget.catTheme,
+                      ),
                     ),
                   )
                 : adding(tempParticipant.length),
-            child: (tempParticipant.isEmpty) ? Text("Skip") : Text("Create"),
+            child: (tempParticipant.isEmpty) ? Text("Skip",style: TextStyle(color: Colors.black, fontSize: 16),) : Text("Create",style: TextStyle(color: Colors.black, fontSize: 16)),
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Text("Add people to this (category name)"),
-          TextField(
-            controller: personCtrl,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Add people in \"${widget.catName}\"",style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),),
+            SizedBox(height: 5,),
+            TextField(
+              controller: personCtrl,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+              ),
+              onChanged: (context)=>setState(() {}),
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: tempParticipant.length,
-              itemBuilder: (BuildContext context, int index) {
-                var person = tempParticipant[index];
-                return Padding(
-                  padding: const EdgeInsets.only(
-                    top: 8,
-                    right: 10,
-                    left: 10,
-                  ),
-                  child: Card(
+            SizedBox(height: 10,),
+            Expanded(
+              child: ListView.builder(
+                padding: EdgeInsets.only(top: 8),
+                itemCount: tempParticipant.length,
+                itemBuilder: (BuildContext context, int index) {
+                  var person = tempParticipant[index];
+                  return Card(
                     child: ListTile(
                       title: Text(person.name),
                       trailing: IconButton(
@@ -73,28 +80,27 @@ class _AddparticipantscreenState extends State<Addparticipantscreen> {
                             ? null
                             : () => removeParticipant(person),
                         icon: Icon(
-                          Icons.cancel,
-                          color: Colors.red,
+                          Icons.cancel_outlined,
+                          color: Colors.black,
                         ),
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
+            ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                backgroundColor: personCtrl.text.isEmpty ? Colors.grey.shade300 : widget.catTheme,
+              ),
+            onPressed: () => (personCtrl.text.isEmpty) ? null : addParticipant(),
+            child: Text("Add", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: personCtrl.text.isEmpty ? Colors.grey : Colors.black),),
             ),
           ),
-        ],
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: SizedBox(
-        width: 300,
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor:
-                personCtrl.text.isEmpty ? Colors.grey.shade300 : Colors.blue,
-          ),
-          onPressed: () => (personCtrl.text.isEmpty) ? null : addParticipant(),
-          child: Text("Add"),
+          ],
         ),
       ),
     );
@@ -124,7 +130,11 @@ class _AddparticipantscreenState extends State<Addparticipantscreen> {
     });
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => Mainscreen(catID:  widget.catID, catName: widget.catName,),
+        builder: (_) => MainScreen(
+          catID: widget.catID,
+          catName: widget.catName,
+          catTheme: widget.catTheme,
+        ),
       ),
     );
   }

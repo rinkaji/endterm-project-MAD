@@ -12,6 +12,7 @@ class Dbhelper {
   static const String groupTb = "groups";
   static const String groupColId = 'group_id';
   static const String groupColName = 'group_name';
+  static const String groupColTheme = 'group_theme';
 
   // members table
   static const String memberTb = "member";
@@ -32,6 +33,7 @@ class Dbhelper {
     var createGroupTb = '''CREATE TABLE IF NOT EXISTS $groupTb (
       $groupColId INTEGER PRIMARY KEY AUTOINCREMENT,
       $groupColName VARCHAR(200)
+      $groupColTheme VARCHAR(200)
     );''';
     var createMemberTb = '''CREATE TABLE IF NOT EXISTS $memberTb (
       $memberColId INTEGER PRIMARY KEY AUTOINCREMENT,
