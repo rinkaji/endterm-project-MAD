@@ -16,10 +16,18 @@ class Mainscreen extends StatefulWidget {
 }
 
 class _MainscreenState extends State<Mainscreen> {
+  var today = DateTime.now();
+  void selectedDay(DateTime day, DateTime focusedDay) {
+    setState(() {
+      today = day;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final filteredParticipant =
         participant.where((person) => person.catID == widget.catID).toList();
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -44,14 +52,19 @@ class _MainscreenState extends State<Mainscreen> {
         body: Column(
           children: [
             Container(
-              child: TableCalendar(
-                headerStyle: HeaderStyle(
-                  formatButtonVisible: false,
-                  titleCentered: true,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TableCalendar(
+                  rowHeight: 43,
+                  headerStyle: HeaderStyle(
+                      formatButtonVisible: false, titleCentered: true),
+                  availableGestures: AvailableGestures.all,
+                  selectedDayPredicate: (day) => isSameDay(day, today),
+                  focusedDay: today,
+                  firstDay: DateTime.utc(2010, 10, 16),
+                  lastDay: DateTime(2030, 3, 14),
+                  onDaySelected: selectedDay,
                 ),
-                focusedDay: DateTime.now(),
-                firstDay: DateTime.utc(2010, 10, 16),
-                lastDay: DateTime(2030, 3, 14),
               ),
             ),
             TabBar(
