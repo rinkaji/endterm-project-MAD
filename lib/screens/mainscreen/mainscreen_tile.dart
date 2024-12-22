@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/model/model.dart';
 
-class mainscreenTile extends StatefulWidget {
-  mainscreenTile({
+class MainScreenTile extends StatefulWidget {
+  MainScreenTile({
     super.key,
     required this.filtered,
   });
@@ -11,18 +11,16 @@ class mainscreenTile extends StatefulWidget {
   String dropdownValue = "Present";
 
   @override
-  State<mainscreenTile> createState() => _mainscreenTileState();
+  State<MainScreenTile> createState() => _MainScreenTileState();
 }
 
-class _mainscreenTileState extends State<mainscreenTile> {
+class _MainScreenTileState extends State<MainScreenTile> {
   @override
   Widget build(BuildContext context) {
-    
-
     return ListTile(
       title: Text(widget.filtered.name),
       trailing: DropdownButton<String>(
-        onChanged: (String? newValue){
+        onChanged: (String? newValue) {
           setState(() {
             widget.dropdownValue = newValue!;
           });
@@ -46,7 +44,6 @@ class _mainscreenTileState extends State<mainscreenTile> {
             value: "Excused",
           ),
         ],
-        
       ),
     );
   }
