@@ -7,10 +7,11 @@ class Addparticipantscreen extends StatefulWidget {
   Addparticipantscreen({
     super.key,
     required this.catID,
+    required this.catName
   });
 
   var catID;
-
+  var catName;
   @override
   State<Addparticipantscreen> createState() => _AddparticipantscreenState();
 }
@@ -36,7 +37,7 @@ class _AddparticipantscreenState extends State<Addparticipantscreen> {
             onPressed: () => tempParticipant.isEmpty
                 ? Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (_) => Mainscreen(catID: widget.catID,),
+                      builder: (_) => Mainscreen(catID: widget.catID, catName: widget.catName,),
                     ),
                   )
                 : adding(tempParticipant.length),
@@ -123,7 +124,7 @@ class _AddparticipantscreenState extends State<Addparticipantscreen> {
     });
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => Mainscreen(catID:  widget.catID),
+        builder: (_) => Mainscreen(catID:  widget.catID, catName: widget.catName,),
       ),
     );
   }

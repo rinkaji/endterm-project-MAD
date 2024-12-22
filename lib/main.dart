@@ -4,6 +4,7 @@ import 'package:myapp/screens/homescreen/homescreen.dart';
 import 'package:myapp/screens/loginscreen/loginscreen.dart';
 
 void main() {
+  // WidgetsFlutterBinding.ensureInitialized();
   runApp(
     myApp(),
   );

@@ -30,7 +30,7 @@ class Createscreen extends StatelessWidget {
               if(input.text.isNotEmpty){
                 addcategory(input.text, id);
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => Addparticipantscreen(catID: id,)),
+                  MaterialPageRoute(builder: (_) => Addparticipantscreen(catID: id, catName: input.text,)),
                 );
               }
             },

@@ -35,16 +35,19 @@ class _HomescreenState extends State<Homescreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(category.length);
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
       floatingActionButton: FloatingActionButton(
         shape: CircleBorder(),
         onPressed: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (_) => Createscreen(
-                      addcategory: add,
-                    ))),
+          context,
+          MaterialPageRoute(
+            builder: (_) => Createscreen(
+              addcategory: add,
+            ),
+          ),
+        ),
         child: Icon(
           Icons.add,
           size: 45,

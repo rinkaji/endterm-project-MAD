@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/data/data.dart';
+import 'package:myapp/screens/mainscreen/mainscreen.dart';
 
 class HomescreenCard extends StatelessWidget {
   HomescreenCard({
@@ -28,6 +29,13 @@ class HomescreenCard extends StatelessWidget {
         height: 100,
         child: Card(
           child: ListTile(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => Mainscreen(catID: index, catName: item,),
+                ),
+              );
+            },
             title: Text(item),
             trailing: PopupMenuButton(
               itemBuilder: (context) => [
@@ -46,22 +54,28 @@ class HomescreenCard extends StatelessWidget {
       ),
     );
   }
+
   openDialog(ctx) {
-    showDialog(context: ctx, builder: (_)=>AlertDialog(
-      title: Text("edit"),
-      content: TextField(
-        controller:  categoryName = TextEditingController(text: item),
-        decoration: InputDecoration(
-          border: OutlineInputBorder(),
-        ),
-      ),
-      actions: [
-        ElevatedButton(onPressed: ()=>Navigator.pop(ctx), child: Text("cancel")),
-        ElevatedButton(onPressed: (){
-          editItem(index, categoryName.text.toString());
-          Navigator.pop(ctx);
-        }, child: Text("edit")),
-      ],
-    ));
+    showDialog(
+        context: ctx,
+        builder: (_) => AlertDialog(
+              title: Text("edit"),
+              content: TextField(
+                controller: categoryName = TextEditingController(text: item),
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              actions: [
+                ElevatedButton(
+                    onPressed: () => Navigator.pop(ctx), child: Text("cancel")),
+                ElevatedButton(
+                    onPressed: () {
+                      editItem(index, categoryName.text.toString());
+                      Navigator.pop(ctx);
+                    },
+                    child: Text("edit")),
+              ],
+            ));
   }
 }
