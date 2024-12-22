@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/model/model.dart';
 
-class mainscreenTile extends StatefulWidget {
-  mainscreenTile({
+class MainScreenTile extends StatefulWidget {
+  MainScreenTile({
     super.key,
     required this.filtered,
   });
@@ -11,16 +11,15 @@ class mainscreenTile extends StatefulWidget {
   String dropdownValue = "Present";
 
   @override
-  State<mainscreenTile> createState() => _mainscreenTileState();
+  State<MainScreenTile> createState() => _MainScreenTileState();
 }
 
-class _mainscreenTileState extends State<mainscreenTile> {
+class _MainScreenTileState extends State<MainScreenTile> {
   @override
   Widget build(BuildContext context) {
-    
-
     return ListTile(
       title: Text(widget.filtered.name),
+<<<<<<< HEAD
       trailing: SizedBox(
         width: 150,
         child: Center(
@@ -57,6 +56,33 @@ class _mainscreenTileState extends State<mainscreenTile> {
             
           ),
         ),
+=======
+      trailing: DropdownButton<String>(
+        onChanged: (String? newValue) {
+          setState(() {
+            widget.dropdownValue = newValue!;
+          });
+        },
+        value: widget.dropdownValue,
+        items: [
+          DropdownMenuItem<String>(
+            child: Text("Present"),
+            value: "Present",
+          ),
+          DropdownMenuItem<String>(
+            child: Text("Absent"),
+            value: "Absent",
+          ),
+          DropdownMenuItem<String>(
+            child: Text("Late"),
+            value: "Late",
+          ),
+          DropdownMenuItem<String>(
+            child: Text("Excused"),
+            value: "Excused",
+          ),
+        ],
+>>>>>>> 975d096b82f2906996b4b0e218c0739d3953cb11
       ),
     );
   }

@@ -5,16 +5,21 @@ import 'package:myapp/screens/homescreen/homescreen.dart';
 import 'package:myapp/screens/mainscreen/mainscreen_tile.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class Mainscreen extends StatefulWidget {
-  Mainscreen({super.key, required this.catID, required this.catName});
+class MainScreen extends StatefulWidget {
+  MainScreen(
+      {super.key,
+      required this.catID,
+      required this.catName,
+      required this.catTheme});
 
   int catID;
   var catName;
-
+  var catTheme;
   @override
-  State<Mainscreen> createState() => _MainscreenState();
+  State<MainScreen> createState() => _MainScreenState();
 }
 
+<<<<<<< HEAD
 class _MainscreenState extends State<Mainscreen> {
   var today = DateTime.now();
   void selectedDay(DateTime day, DateTime focusedDay) {
@@ -23,6 +28,9 @@ class _MainscreenState extends State<Mainscreen> {
     });
   }
 
+=======
+class _MainScreenState extends State<MainScreen> {
+>>>>>>> 975d096b82f2906996b4b0e218c0739d3953cb11
   @override
   Widget build(BuildContext context) {
     final filteredParticipant =
@@ -32,6 +40,7 @@ class _MainscreenState extends State<Mainscreen> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: widget.catTheme,
           leading: IconButton(
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute(
@@ -67,6 +76,7 @@ class _MainscreenState extends State<Mainscreen> {
                 ),
               ),
             ),
+            
             TabBar(
               dividerColor: Colors.transparent,
               tabs: [
@@ -86,7 +96,7 @@ class _MainscreenState extends State<Mainscreen> {
                     itemCount: filteredParticipant.length,
                     itemBuilder: (BuildContext context, int index) {
                       var filtered = filteredParticipant[index];
-                      return mainscreenTile(filtered: filtered);
+                      return MainScreenTile(filtered: filtered);
                     },
                   ),
                 ],
