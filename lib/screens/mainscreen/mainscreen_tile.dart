@@ -19,7 +19,6 @@ class _MainScreenTileState extends State<MainScreenTile> {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(widget.filtered.name),
-<<<<<<< HEAD
       trailing: SizedBox(
         width: 150,
         child: Center(
@@ -56,33 +55,6 @@ class _MainScreenTileState extends State<MainScreenTile> {
             
           ),
         ),
-=======
-      trailing: DropdownButton<String>(
-        onChanged: (String? newValue) {
-          setState(() {
-            widget.dropdownValue = newValue!;
-          });
-        },
-        value: widget.dropdownValue,
-        items: [
-          DropdownMenuItem<String>(
-            child: Text("Present"),
-            value: "Present",
-          ),
-          DropdownMenuItem<String>(
-            child: Text("Absent"),
-            value: "Absent",
-          ),
-          DropdownMenuItem<String>(
-            child: Text("Late"),
-            value: "Late",
-          ),
-          DropdownMenuItem<String>(
-            child: Text("Excused"),
-            value: "Excused",
-          ),
-        ],
->>>>>>> 975d096b82f2906996b4b0e218c0739d3953cb11
       ),
     );
   }

@@ -19,8 +19,7 @@ class MainScreen extends StatefulWidget {
   State<MainScreen> createState() => _MainScreenState();
 }
 
-<<<<<<< HEAD
-class _MainscreenState extends State<Mainscreen> {
+class _MainScreenState extends State<MainScreen> {
   var today = DateTime.now();
   void selectedDay(DateTime day, DateTime focusedDay) {
     setState(() {
@@ -28,9 +27,6 @@ class _MainscreenState extends State<Mainscreen> {
     });
   }
 
-=======
-class _MainScreenState extends State<MainScreen> {
->>>>>>> 975d096b82f2906996b4b0e218c0739d3953cb11
   @override
   Widget build(BuildContext context) {
     final filteredParticipant =
