@@ -20,6 +20,8 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+
+  //for calendar day selection
   var today = DateTime.now();
   void selectedDay(DateTime day, DateTime focusedDay) {
     setState(() {
@@ -27,11 +29,50 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+
+  //for creating events in calendar
+  Map<DateTime, List<Event>> events = {};
+  void _longPressedDay(DateTime day, DateTime focusedDay){
+    
+    var input = TextEditingController();
+    showDialog(context: context, builder: (_){
+      return AlertDialog(
+        title: Text("Add Event"),
+        content: TextField(
+          controller: input,
+          decoration: InputDecoration(
+            border: OutlineInputBorder()
+          ),
+        ),
+        actions: [
+          TextButton(onPressed: ()=>Navigator.pop(context), child: Text("Cancel")),
+          ElevatedButton(onPressed: (){
+           setState(() {
+            if (events[day] != null) {
+              events[day]?.add(Event(input.text));
+            } else {
+              events[day] = [Event(input.text)];
+            }
+          });
+          Navigator.pop(context);
+          }, child: Text("Add")),
+        ],
+      );
+    });
+    setState(() {
+      today = day;
+    });
+  }
+  List<Event> eventsForDay(DateTime today){
+    return events[today] ?? [];
+  }
+
   @override
   Widget build(BuildContext context) {
     final filteredParticipant =
         participant.where((person) => person.catID == widget.catID).toList();
 
+    
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -60,6 +101,9 @@ class _MainScreenState extends State<MainScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TableCalendar(
+                  onDayLongPressed: _longPressedDay,
+                  eventLoader: eventsForDay,
+                  
                   rowHeight: 43,
                   headerStyle: HeaderStyle(
                       formatButtonVisible: false, titleCentered: true),
@@ -72,7 +116,6 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               ),
             ),
-            
             TabBar(
               dividerColor: Colors.transparent,
               tabs: [
@@ -87,7 +130,28 @@ class _MainScreenState extends State<MainScreen> {
             Expanded(
               child: TabBarView(
                 children: [
-                  Text("Mamam"),
+                  ListView.builder(
+                    itemCount: eventsForDay(today).length,
+                    itemBuilder: (BuildContext context, int index) {
+                      print(eventsForDay(today).length);
+                      var event = eventsForDay(today)[index];
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Card(
+                          child: ListTile(
+                            title: Text(event.title),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(onPressed: (){}, icon: Icon(Icons.edit)),
+                                IconButton(onPressed: (){}, icon: Icon(Icons.cancel_rounded)),
+                                ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                   ListView.builder(
                     itemCount: filteredParticipant.length,
                     itemBuilder: (BuildContext context, int index) {

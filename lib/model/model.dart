@@ -53,3 +53,9 @@ class Category {
 
   Color get color => theme.color;
 }
+
+
+class Event {
+  late String title;
+  Event(this.title);
+}
