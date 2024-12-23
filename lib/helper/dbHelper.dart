@@ -131,4 +131,9 @@ class DbHelper {
     print('${result} group fetched');
     return result;
   }
+
+  static void delete() async{
+    var db = await openDb();
+    
+  }
 }
