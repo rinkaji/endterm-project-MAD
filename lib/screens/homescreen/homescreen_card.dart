@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/helper/dbHelper.dart';
+
 import 'package:myapp/model/model.dart';
 import 'package:myapp/model/theme_selection.dart';
 import 'package:myapp/screens/mainscreen/mainscreen.dart';
@@ -20,7 +20,6 @@ class HomeScreenCard extends StatelessWidget {
   var categoryName;
   var categorySubject;
   var categorySection;
-
   
   @override
   Widget build(BuildContext context) {
@@ -50,7 +49,7 @@ class HomeScreenCard extends StatelessWidget {
                     return [
                       PopupMenuItem(
                         height: 30,
-                        onTap: () => openDialog(context),
+                        onTap: ()=> openDialog(context),
                         child: Text(
                           "Edit",
                           style: TextStyle(
@@ -74,11 +73,12 @@ class HomeScreenCard extends StatelessWidget {
         );
   }
 
-  void openDialog(ctx) {
+  void openDialog(context) {
     showDialog(
-        context: ctx,
+        context: context,
         builder: (_) => AlertDialog(
-              title: Text("edit"),
+              backgroundColor: Colors.white,
+              title: Text("edit",style: TextStyle(color: Colors.black),),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -87,6 +87,7 @@ class HomeScreenCard extends StatelessWidget {
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
                     ),
+                    style: TextStyle(color: Colors.black),
                   ),
                   SizedBox(height: 12,),
                   TextField(
@@ -94,6 +95,7 @@ class HomeScreenCard extends StatelessWidget {
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
                     ),
+                    style: TextStyle(color: Colors.black),
                   ),
                   SizedBox(height: 12,),
                   TextField(
@@ -101,23 +103,27 @@ class HomeScreenCard extends StatelessWidget {
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
                     ),
+                    style: TextStyle(color: Colors.black),
                   ),
                 ],
               ),
               actions: [
-                ElevatedButton(
-                    onPressed: () => Navigator.pop(ctx), child: Text("cancel")),
+                TextButton(
+                    onPressed: () => Navigator.pop(context), child: Text("Cancel",style: TextStyle(color: Colors.black),)),
                 ElevatedButton(
                     onPressed: () {
                       if(categoryName.text.isNotEmpty){
                       var category = Category(id: item.id, name: categoryName.text, theme:  theme, subject: categorySubject.text, subSection: categorySection.text);
                       editItem(category);
-                      Navigator.pop(ctx);
+                      Navigator.pop(context);
                       }
                     },
-                    child: Text("edit")),
+                    child: Text("Edit", style: TextStyle(color: Colors.black),),
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
+                ),
+                    
               ],
             ));
   }
-  
+
 }
