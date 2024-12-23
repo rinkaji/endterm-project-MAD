@@ -5,7 +5,7 @@ import 'package:path/path.dart';
 class DbHelper {
   //db constants
   static const String dbName = "attendance.db";
-  static const int dbVersion = 1;
+  static const int dbVersion = 2;
 
   //table constants
 
@@ -16,6 +16,10 @@ class DbHelper {
   static const String groupColTheme = 'group_theme';
   static const String groupColSubj = 'group_subj';
   static const String groupColSubSection = 'group_subsection';
+
+  // SqfliteDatabaseException (DatabaseException(table groups has no column named group_subj (code 1 SQLITE_ERROR): , 
+  //while compiling: INSERT INTO "groups" (group_name, group_theme, group_subj, group_subsection) VALUES (?, ?, ?, ?)) 
+  //sql 'INSERT INTO "groups" (group_name, group_theme, group_subj, group_subsection) VALUES (?, ?, ?, ?)' args [nckc. , Sky, , ])
 
   // members table
   static const String memberTb = "members";
@@ -44,17 +48,6 @@ class DbHelper {
   static const String eventGroupColEventId = "event_id";
   
 
-  //events table 
-  static const String eventTb = "event";
-  static const String eventColId = "event_id";
-  static const String eventColName = "event_name";
-  static const String eventColDate = "event_date";
-
-  //events_in_group table
-  static const String eventGroupTb = "event_group";
-  static const String eventGroupColId = "event_group_id";
-  static const String eventGroupColGroupId = "group_id";
-  static const String eventGroupColEventId = "event_id";
   
 
   static Future<Database> openDb() async {
@@ -91,7 +84,7 @@ class DbHelper {
     $eventGroupColGroupId INT,
     $eventGroupColEventId INT
     );''';
-    openDatabase(
+    var db = await openDatabase(
       path,
       version: dbVersion,
       onCreate: (db, version) {
@@ -133,10 +126,11 @@ class DbHelper {
     
   }
   
-  static Future<List<Category>> fetchGroup() async {
+  static Future<List<Map<String, dynamic>>> fetchGroup() async {
     final db = await openDb();
-    final result = await db.query(groupTb);
+    var result = await db.query(groupTb);
     print('${result} group fetched');
-    return result.map((map) => Category.fromMap(map)).toList();
+    return result;
+    // return result.map((map) => Category.fromMap(map)).toList();
   }
 }

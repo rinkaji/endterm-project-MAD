@@ -6,9 +6,9 @@ import 'package:myapp/model/theme_selection.dart';
 import 'package:myapp/screens/add_participant_screen/addParticipantScreen.dart';
 
 class CreateScreen extends StatefulWidget {
-  CreateScreen({super.key, required this.addcategory});
+  CreateScreen({super.key, required this.fetch});
 
-  Function addcategory;
+  Function fetch;
 
   @override
   State<CreateScreen> createState() => _CreateScreenState();
@@ -66,7 +66,12 @@ class _CreateScreenState extends State<CreateScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: createGroup,
+            onPressed: () {
+              createGroup();
+              nameCtrl.clear();
+              subSecCtrl.clear();
+              subjCtrl.clear();
+            },
             child: Text(
               "Create",
               style: TextStyle(
@@ -164,14 +169,16 @@ class _CreateScreenState extends State<CreateScreen> {
         subSection: subSecCtrl.text,
         subject: subjCtrl.text,
       );
-      
+
       var id = await DbHelper.createGroup(category);
+      widget.fetch();
 
       Navigator.of(context).push(MaterialPageRoute(
           builder: (_) => AddParticipantScreen(
                 catID: id,
+                catName: category.name,
+                catTheme: category.theme,
               )));
     }
-    widget.addcategory;
   }
 }

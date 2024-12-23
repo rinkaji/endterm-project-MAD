@@ -6,14 +6,14 @@ import 'package:myapp/screens/mainscreen/mainscreen.dart';
 
 class AddParticipantScreen extends StatefulWidget {
   AddParticipantScreen({super.key, required this.catID, 
-  // required this.catName, 
-  // required this.catTheme, 
+  required this.catName, 
+  required this.catTheme, 
   // required this.cate
   });
 
   final int catID;
-  // final String catName;
-  // final ThemeSelection catTheme;
+  final String catName;
+  final ThemeSelection catTheme;
   // final Category cate;
   @override
   State<AddParticipantScreen> createState() => _AddParticipantScreenState();
@@ -63,7 +63,7 @@ class _AddParticipantScreenState extends State<AddParticipantScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Add people in \"\"",style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),),
+            Text("Add people in ${widget.catName}",style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),),
             SizedBox(height: 5,),
             TextField(
               controller: personCtrl,

@@ -25,6 +25,7 @@ class HomeScreenCard extends StatelessWidget {
                 catID: item.id,
                 catName: item.name,
                 catTheme: item.color,
+                
               ),
             ),
           );
