@@ -1,8 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/data/data.dart';
-import 'package:myapp/model/model.dart';
+import 'package:myapp/helper/dbHelper.dart';
 import 'package:myapp/screens/createscreen/createscreen.dart';
 import 'package:myapp/screens/homescreen/homescreen_card.dart';
 
@@ -14,6 +13,17 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
+  // createGroup(String name, int id) async {
+  //     final newCatge
+  //     DbHelper.createGroup(category);
+
+  // }
+
+  void fetchGroup() async {
+    category = await DbHelper.fetchGroup();
+    setState(() {});
+  }
+
   void delete(id) {
     setState(() {
       category.removeAt(id);
@@ -29,9 +39,7 @@ class _HomescreenState extends State<Homescreen> {
 
   void add(added, id) {
     setState(() {
-      // category.add(
-      //   Category(id: id, name: added),
-      // );
+      fetchGroup();
     });
   }
 
@@ -47,7 +55,7 @@ class _HomescreenState extends State<Homescreen> {
             context,
             MaterialPageRoute(
               builder: (_) => CreateScreen(
-                //addcategory: add,
+                addcategory: fetchGroup,
               ),
             ),
           ),
@@ -66,17 +74,40 @@ class _HomescreenState extends State<Homescreen> {
               style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w500, fontSize: 24)),
         ),
-        body: GridView.builder(
+        body: FutureBuilder(
+          future: DbHelper.fetchGroup(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            var category = snapshot.data;
+            return GridView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                mainAxisSpacing: 5,
-                crossAxisSpacing: 5,
-                childAspectRatio: 3 / 2,
-                crossAxisCount: 2),
-            itemCount: category.length,
+              mainAxisSpacing: 5,
+              crossAxisSpacing: 5,
+              childAspectRatio: 3 / 2,
+              crossAxisCount: 2),
+            itemCount: category == null ? 0 : category.length,
             itemBuilder: (BuildContext context, int index) {
-              final item = category[index];
-              return HomeScreenCard(item: item, deleteItem: delete, editItem: edit,);
-            }));
+              final item = category![index];
+              return HomeScreenCard(
+                item: item,
+                deleteItem: delete,
+                editItem: edit,
+              );
+            }
+  );
+          },
+        ));
+  }
+
+  void fetchCategories() async {
+    final result = await DbHelper.fetchGroup();
+    setState(() {
+      category = result;
+    });
   }
 }

@@ -8,11 +8,11 @@ import 'package:table_calendar/table_calendar.dart';
 class MainScreen extends StatefulWidget {
   MainScreen(
       {super.key,
-      required this.catID,
-      required this.catName,
-      required this.catTheme});
+       this.catID,
+       this.catName,
+       this.catTheme});
 
-  int catID;
+  int? catID;
   var catName;
   var catTheme;
   @override

@@ -6,12 +6,9 @@ import 'package:myapp/model/theme_selection.dart';
 import 'package:myapp/screens/add_participant_screen/addParticipantScreen.dart';
 
 class CreateScreen extends StatefulWidget {
-  CreateScreen({
-    super.key,
-    //required this.addcategory
-  });
+  CreateScreen({super.key, required this.addcategory});
 
-  //Function addcategory;
+  Function addcategory;
 
   @override
   State<CreateScreen> createState() => _CreateScreenState();
@@ -154,7 +151,12 @@ class _CreateScreenState extends State<CreateScreen> {
     );
   }
 
-  void createGroup() {
+  // void fetchGroup() async {
+  //   category = await DbHelper.fetchGroup();
+  //   setState(() {});
+  // }
+
+  void createGroup() async {
     if (nameCtrl.text.isNotEmpty) {
       var category = Category.withoutId(
         name: nameCtrl.text,
@@ -162,12 +164,14 @@ class _CreateScreenState extends State<CreateScreen> {
         subSection: subSecCtrl.text,
         subject: subjCtrl.text,
       );
-      DbHelper.createGroup(category);
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_)=>AddParticipantScreen(
-            
-          )));
+      
+      var id = await DbHelper.createGroup(category);
+
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (_) => AddParticipantScreen(
+                catID: id,
+              )));
     }
+    widget.addcategory;
   }
 }
