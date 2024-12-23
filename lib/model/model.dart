@@ -27,13 +27,13 @@ class Participant {
     };
   }
 
-  // factory Participant.fromMap(Map<String, dynamic> map) {
-  //   return Participant(
-  //     ptID: map['member_id'],
-  //     catID: catID, 
-  //     name: name
-  //   );
-  // }
+  factory Participant.fromMap(Map<String, dynamic> map) {
+    return Participant(
+      ptID: map[DbHelper.memberColId],
+      catID: map[DbHelper.memberColGroupId], 
+      name: map[DbHelper.memberColName]
+    );
+  }
 }
 
 class Category {
@@ -62,6 +62,15 @@ class Category {
     };
   }
 
+  Map<String, dynamic> toMapWithoutId() {
+    return {
+      DbHelper.groupColName: name,
+      DbHelper.groupColTheme: theme.name,
+      DbHelper.groupColSubj: subject,
+      DbHelper.groupColSubSection: subSection
+    };
+  }
+
   factory Category.fromMap(Map<String, dynamic> map) {
     return Category(
       id: map[DbHelper.groupColId],
@@ -70,15 +79,6 @@ class Category {
       subSection: map[DbHelper.groupColSubSection],
       subject: map[DbHelper.groupColSubj],
     );
-  }
-
-  Map<String, dynamic> toMapWithoutId() {
-    return {
-      DbHelper.groupColName: name,
-      DbHelper.groupColTheme: theme.name,
-      DbHelper.groupColSubj: subject,
-      DbHelper.groupColSubSection: subSection
-    };
   }
 
   Color get color => theme.color;

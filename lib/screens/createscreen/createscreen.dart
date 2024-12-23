@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/data/data.dart';
 import 'package:myapp/helper/dbHelper.dart';
 import 'package:myapp/model/model.dart';
 import 'package:myapp/model/theme_selection.dart';
@@ -8,7 +7,7 @@ import 'package:myapp/screens/add_participant_screen/addParticipantScreen.dart';
 class CreateScreen extends StatefulWidget {
   CreateScreen({super.key, required this.fetch});
 
-  Function fetch;
+  final Function fetch;
 
   @override
   State<CreateScreen> createState() => _CreateScreenState();
@@ -46,7 +45,6 @@ class _CreateScreenState extends State<CreateScreen> {
   var nameCtrl = TextEditingController();
   var subjCtrl = TextEditingController();
   var subSecCtrl = TextEditingController();
-  int id = category.length;
   ThemeSelection selectedTheme = ThemeSelection.Sky;
   @override
   Widget build(BuildContext context) {
@@ -66,12 +64,7 @@ class _CreateScreenState extends State<CreateScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () {
-              createGroup();
-              nameCtrl.clear();
-              subSecCtrl.clear();
-              subjCtrl.clear();
-            },
+            onPressed: createGroup,
             child: Text(
               "Create",
               style: TextStyle(
@@ -156,8 +149,6 @@ class _CreateScreenState extends State<CreateScreen> {
     );
   }
 
-
-
   void createGroup() async {
     if (nameCtrl.text.isNotEmpty) {
       var category = Category.withoutId(
@@ -176,6 +167,9 @@ class _CreateScreenState extends State<CreateScreen> {
                 catName: category.name,
                 catTheme: category.theme,
               )));
+      nameCtrl.clear();
+              subSecCtrl.clear();
+              subjCtrl.clear();
     }
   }
 }

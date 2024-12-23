@@ -31,7 +31,7 @@ class HomeScreenCard extends StatelessWidget {
               builder: (_) => MainScreen(
                 catID: item.id,
                 catName: item.name,
-                catTheme: item.color,
+                catTheme: item.theme,
               ),
             ),
           );
