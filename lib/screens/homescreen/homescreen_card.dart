@@ -8,16 +8,13 @@ class HomeScreenCard extends StatelessWidget {
     required this.item,
     required this.deleteItem,
     required this.editItem,
-    required this.index,
-    required this.itemColor
+
   });
 
   final Category item;
   Function deleteItem;
   Function editItem;
-  int index;
   var categoryName;
-  Color itemColor;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -25,7 +22,7 @@ class HomeScreenCard extends StatelessWidget {
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (_) => MainScreen(
-                catID: index,
+                catID: item.id,
                 catName: item.name,
                 catTheme: item.color,
               ),
@@ -55,7 +52,7 @@ class HomeScreenCard extends StatelessWidget {
                       ),
                       PopupMenuItem(
                         height: 30,
-                        onTap: () => deleteItem(index),
+                        onTap: () => deleteItem(item.id),
                         child: Text("Delete",
                             style: TextStyle(color: Colors.black, fontWeight: FontWeight.w400)),
                       ),
@@ -70,7 +67,7 @@ class HomeScreenCard extends StatelessWidget {
         );
   }
 
-  openDialog(ctx) {
+  void openDialog(ctx) {
     showDialog(
         context: ctx,
         builder: (_) => AlertDialog(
@@ -87,7 +84,7 @@ class HomeScreenCard extends StatelessWidget {
                     onPressed: () => Navigator.pop(ctx), child: Text("cancel")),
                 ElevatedButton(
                     onPressed: () {
-                      editItem(index, categoryName.text.toString());
+                      editItem(item.id, categoryName.text.toString());
                       Navigator.pop(ctx);
                     },
                     child: Text("edit")),

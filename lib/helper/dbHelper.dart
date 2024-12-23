@@ -1,7 +1,8 @@
+import 'package:myapp/model/model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-class Dbhelper {
+class DbHelper {
   //db constants
   static const String dbName = "attendance.db";
   static const int dbVersion = 1;
@@ -13,9 +14,11 @@ class Dbhelper {
   static const String groupColId = 'group_id';
   static const String groupColName = 'group_name';
   static const String groupColTheme = 'group_theme';
+  static const String groupColSubj = 'group_subj';
+  static const String groupColSubSection = 'group_subsection';
 
   // members table
-  static const String memberTb = "member";
+  static const String memberTb = "members";
   static const String memberColId = 'member_id';
   static const String memberColName = "member_name";
   static const String memberColGroupId = "group_id";
@@ -41,12 +44,27 @@ class Dbhelper {
   static const String eventGroupColEventId = "event_id";
   
 
-  static void openDb() async {
+  //events table 
+  static const String eventTb = "event";
+  static const String eventColId = "event_id";
+  static const String eventColName = "event_name";
+  static const String eventColDate = "event_date";
+
+  //events_in_group table
+  static const String eventGroupTb = "event_group";
+  static const String eventGroupColId = "event_group_id";
+  static const String eventGroupColGroupId = "group_id";
+  static const String eventGroupColEventId = "event_id";
+  
+
+  static Future<Database> openDb() async {
     var path = join(await getDatabasesPath(), dbName);
     var createGroupTb = '''CREATE TABLE IF NOT EXISTS $groupTb (
       $groupColId INTEGER PRIMARY KEY AUTOINCREMENT,
-      $groupColName VARCHAR(200),
-      $groupColTheme VARCHAR(200)
+      $groupColName VARCHAR(200) NOT NULL,
+      $groupColTheme VARCHAR(200),
+      $groupColSubj TEXT,
+      $groupColSubSection TEXT
     );''';
     var createMemberTb = '''CREATE TABLE IF NOT EXISTS $memberTb (
       $memberColId INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -89,7 +107,7 @@ class Dbhelper {
         print("$eventGroupTb created");
       },
       onUpgrade: (db, oldVersion, newVersion) {
-        if(newVersion <= oldVersion) return;
+        if (newVersion <= oldVersion) return;
         db.execute("DROP TABLE IF EXISTS $groupTb");
         db.execute(createGroupTb);
         db.execute("DROP TABLE IF EXISTS $memberTb");
@@ -104,5 +122,25 @@ class Dbhelper {
       },
     );
     print("database opened");
+    return db;
   }
+
+  static void createGroup(Category category) async {
+    var db = await openDb();
+    var id = await db.insert(groupTb, category.toMapWithoutId());
+    print('${id} group added');
+  }
+
+  // static Future<List<Category>> fetchGroup() async {
+  //   var db = await openDb();
+  //   final List<Map<String, dynamic>> maps = await db.query(groupTb);
+
+  //   return List.generate(maps.length, (i){
+  //     return Category(
+  //       id: id, 
+  //       name: name, 
+  //       theme: theme
+  //     )
+  //   });
+  // }
 }

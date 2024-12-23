@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/data/data.dart';
 import 'package:myapp/helper/dbHelper.dart';
+import 'package:myapp/model/model.dart';
 import 'package:myapp/model/theme_selection.dart';
 import 'package:myapp/screens/add_participant_screen/addParticipantScreen.dart';
 
 class CreateScreen extends StatefulWidget {
-  CreateScreen({super.key, required this.addcategory});
+  CreateScreen({
+    super.key,
+    //required this.addcategory
+  });
 
-  Function addcategory;
+  //Function addcategory;
 
   @override
   State<CreateScreen> createState() => _CreateScreenState();
@@ -43,14 +46,15 @@ class _CreateScreenState extends State<CreateScreen> {
         });
   }
 
-  var input = TextEditingController();
-  var id = category.length;
+  var nameCtrl = TextEditingController();
+  var subjCtrl = TextEditingController();
+  var subSecCtrl = TextEditingController();
+  int id = category.length;
   ThemeSelection selectedTheme = ThemeSelection.Sky;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
           icon: Icon(
@@ -65,23 +69,13 @@ class _CreateScreenState extends State<CreateScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () {
-              if (input.text.isNotEmpty) {
-                widget.addcategory(input.text, id);
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (_) => AddParticipantScreen(
-                            catID: id,
-                            catName: input.text,
-                            catTheme: selectedTheme.color,
-                          )),
-                );
-              }
-              
-            },
+            onPressed: createGroup,
             child: Text(
               "Create",
-              style: TextStyle(fontSize: 16, color: input.text.isEmpty ? Colors.grey : Colors.blue, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                  fontSize: 16,
+                  color: nameCtrl.text.isEmpty ? Colors.grey : Colors.blue,
+                  fontWeight: FontWeight.w600),
             ),
           ),
         ],
@@ -99,8 +93,8 @@ class _CreateScreenState extends State<CreateScreen> {
               height: 8,
             ),
             TextField(
-              controller: input,
-              onChanged: (input)=>setState((){}),
+              controller: nameCtrl,
+              onChanged: (input) => setState(() {}),
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
               ),
@@ -116,6 +110,7 @@ class _CreateScreenState extends State<CreateScreen> {
               height: 8,
             ),
             TextField(
+              controller: subSecCtrl,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
               ),
@@ -131,6 +126,7 @@ class _CreateScreenState extends State<CreateScreen> {
               height: 8,
             ),
             TextField(
+              controller: subjCtrl,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
               ),
@@ -156,5 +152,22 @@ class _CreateScreenState extends State<CreateScreen> {
         ),
       ),
     );
+  }
+
+  void createGroup() {
+    if (nameCtrl.text.isNotEmpty) {
+      var category = Category.withoutId(
+        name: nameCtrl.text,
+        theme: selectedTheme,
+        subSection: subSecCtrl.text,
+        subject: subjCtrl.text,
+      );
+      DbHelper.createGroup(category);
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_)=>AddParticipantScreen(
+            
+          )));
+    }
   }
 }

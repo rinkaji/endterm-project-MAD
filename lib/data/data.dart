@@ -9,7 +9,8 @@ List<Category> category = [
   ];
 
 List<Participant> participant = [
+  Participant(ptID: 0, catID: 0, name: "Gabriel Lipaysa")
 ]; 
 
-List<Participant> tempParticipant = [];
+
 
