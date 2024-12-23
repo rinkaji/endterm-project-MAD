@@ -125,9 +125,9 @@ class DbHelper {
     return result;
   }
 
-  static Future<List<Map<String, dynamic>>> update() async {
+  static Future<int> update(Category category) async {
     final db = await openDb();
-    var result = await db.query(groupTb);
+    var result = await db.update(groupTb, category.toMap(), where: "$groupColId = ?", whereArgs: [category.id] );
     print('${result} group fetched');
     return result;
   }

@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/data/data.dart';
 import 'package:myapp/helper/dbHelper.dart';
 import 'package:myapp/model/model.dart';
+import 'package:myapp/model/theme_selection.dart';
 import 'package:myapp/screens/createscreen/createscreen.dart';
 import 'package:myapp/screens/homescreen/homescreen_card.dart';
 
@@ -29,8 +30,7 @@ class _HomescreenState extends State<Homescreen> {
   }
 
   void edit(Category category) {
-    var category = Category(id: id, name: name, theme: theme)
-    DbHelper.editGroup(category.toMap(Category));
+    DbHelper.update(category);
     setState(() {});
   }
 
@@ -86,7 +86,9 @@ class _HomescreenState extends State<Homescreen> {
             itemCount: category == null ? 0 : category.length,
             itemBuilder: (BuildContext context, int index) {
               final item = category![index];
+              ThemeSelection? theme = item["$DbHelper.groupColTheme"] ?? ThemeSelection.Sky;
               return HomeScreenCard(
+                theme: theme!,
                 item: Category.fromMap(item),
                 deleteItem: delete,
                 editItem: edit,

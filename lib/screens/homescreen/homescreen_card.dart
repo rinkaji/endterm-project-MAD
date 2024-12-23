@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/helper/dbHelper.dart';
 import 'package:myapp/model/model.dart';
+import 'package:myapp/model/theme_selection.dart';
 import 'package:myapp/screens/mainscreen/mainscreen.dart';
 
 class HomeScreenCard extends StatelessWidget {
@@ -9,15 +10,18 @@ class HomeScreenCard extends StatelessWidget {
     required this.item,
     required this.deleteItem,
     required this.editItem,
-
+    required this.theme
   });
 
   final Category item;
   Function deleteItem;
   Function editItem;
+  ThemeSelection theme;
   var categoryName;
   var categorySubject;
   var categorySection;
+
+  
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -28,7 +32,6 @@ class HomeScreenCard extends StatelessWidget {
                 catID: item.id,
                 catName: item.name,
                 catTheme: item.color,
-                
               ),
             ),
           );
@@ -106,11 +109,15 @@ class HomeScreenCard extends StatelessWidget {
                     onPressed: () => Navigator.pop(ctx), child: Text("cancel")),
                 ElevatedButton(
                     onPressed: () {
-                      editItem(item);
+                      if(categoryName.text.isNotEmpty){
+                      var category = Category(id: item.id, name: categoryName.text, theme:  theme, subject: categorySubject.text, subSection: categorySection.text);
+                      editItem(category);
                       Navigator.pop(ctx);
+                      }
                     },
                     child: Text("edit")),
               ],
             ));
   }
+  
 }
