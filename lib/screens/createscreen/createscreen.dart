@@ -50,12 +50,12 @@ class _CreateScreenState extends State<CreateScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: Icon(
-            Icons.arrow_back,
-          ),
-        ),
+        // leading: IconButton(
+        //   onPressed: () => Navigator.pop(context),
+        //   icon: Icon(
+        //     Icons.arrow_back,
+        //   ),
+        // ),
         shadowColor: Colors.black.withValues(alpha: 1),
         elevation: 0.1,
         title: Text(
@@ -160,7 +160,7 @@ class _CreateScreenState extends State<CreateScreen> {
 
       var id = await DbHelper.createGroup(category);
       widget.fetch();
-
+      
       Navigator.of(context).push(MaterialPageRoute(
           builder: (_) => AddParticipantScreen(
                 catID: id,

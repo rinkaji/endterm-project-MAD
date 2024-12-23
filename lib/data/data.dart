@@ -1,6 +1,5 @@
 
 import 'package:myapp/model/model.dart';
-import 'package:myapp/model/theme_selection.dart';
 
 List<Category> category = [
     // Category(id: 0, name: "Block A", theme: ThemeSelection.Sakura),

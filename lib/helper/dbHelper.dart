@@ -125,9 +125,10 @@ class DbHelper {
     return result;
   }
 
-  static Future<int> update(Category category) async {
+  static Future<int> updateGroup(Category category) async {
     final db = await openDb();
-    var result = await db.update(groupTb, category.toMap(), where: "$groupColId = ?", whereArgs: [category.id] );
+    var result = await db.update(groupTb, category.toMap(),
+        where: "$groupColId = ?", whereArgs: [category.id]);
     print('${result} group fetched');
     return result;
   }
@@ -141,8 +142,31 @@ class DbHelper {
 
   static Future<List<Map<String, dynamic>>> fetchMember(int id) async {
     var db = await DbHelper.openDb();
-    var result = await db.query(memberTb,columns: [DbHelper.memberColId, DbHelper.memberColGroupId, DbHelper.memberColName], where: '${DbHelper.memberColGroupId} = ?', whereArgs: [id]);
+    var result = await db.query(memberTb,
+        columns: [
+          DbHelper.memberColId,
+          DbHelper.memberColGroupId,
+          DbHelper.memberColName
+        ],
+        where: '${DbHelper.memberColGroupId} = ?',
+        whereArgs: [id]);
     print('${result} member fetched');
+    return result;
+  }
+
+  static Future<int> updateMember(Participant participant) async {
+    var db = await DbHelper.openDb();
+    int result = await db.update(memberTb, participant.toMap(),
+        where: '${DbHelper.memberColId} = ?', whereArgs: [participant.ptID]);
+    print('${result} member updated');
+    return result;
+  }
+
+  static Future<int> deleteMember(int id) async{
+    var db = await DbHelper.openDb();
+    int result = await db.delete(memberTb,
+        where: '${DbHelper.memberColId} = ?', whereArgs: [id]);
+    print('${result} member updated');
     return result;
   }
 }
