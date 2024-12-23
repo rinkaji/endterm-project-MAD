@@ -125,22 +125,18 @@ class DbHelper {
     return db;
   }
 
-  static void createGroup(Category category) async {
+  static Future<int> createGroup(Category category) async {
     var db = await openDb();
     var id = await db.insert(groupTb, category.toMapWithoutId());
     print('${id} group added');
+    return id;
+    
   }
-
-  // static Future<List<Category>> fetchGroup() async {
-  //   var db = await openDb();
-  //   final List<Map<String, dynamic>> maps = await db.query(groupTb);
-
-  //   return List.generate(maps.length, (i){
-  //     return Category(
-  //       id: id, 
-  //       name: name, 
-  //       theme: theme
-  //     )
-  //   });
-  // }
+  
+  static Future<List<Category>> fetchGroup() async {
+    final db = await openDb();
+    final result = await db.query(groupTb);
+    print('${result} group fetched');
+    return result.map((map) => Category.fromMap(map)).toList();
+  }
 }

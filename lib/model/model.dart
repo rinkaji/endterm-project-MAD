@@ -4,11 +4,36 @@ import 'package:myapp/helper/dbHelper.dart';
 import 'package:myapp/model/theme_selection.dart';
 
 class Participant {
+  int? ptID;
   late int catID;
-  late int ptID;
   late String name;
 
-  Participant({required this.ptID, required this.catID, required this.name});
+  Participant({this.ptID, required this.catID, required this.name});
+
+  Participant.withoutId({this.ptID, required this.catID, required this.name});
+
+  Map<String, dynamic> toMap() {
+    return {
+      DbHelper.memberColId: ptID,
+      DbHelper.memberColGroupId: catID,
+      DbHelper.memberColName: name,
+    };
+  }
+
+  Map<String, dynamic> toMapWithoutId() {
+    return {
+      DbHelper.memberColGroupId: catID,
+      DbHelper.memberColName: name,
+    };
+  }
+
+  // factory Participant.fromMap(Map<String, dynamic> map) {
+  //   return Participant(
+  //     ptID: map['member_id'],
+  //     catID: catID, 
+  //     name: name
+  //   );
+  // }
 }
 
 class Category {
@@ -18,9 +43,14 @@ class Category {
   String? subject;
   String? subSection;
   Category(
-      {required this.id, required this.name, required this.theme, this.subject, this.subSection});
+      {required this.id,
+      required this.name,
+      required this.theme,
+      this.subject,
+      this.subSection});
 
-  Category.withoutId({required this.name, required this.theme, this.subject, this.subSection});
+  Category.withoutId(
+      {required this.name, required this.theme, this.subject, this.subSection});
 
   Map<String, dynamic> toMap() {
     return {
@@ -34,11 +64,11 @@ class Category {
 
   factory Category.fromMap(Map<String, dynamic> map) {
     return Category(
-      id: map['id'],
-      name: map['name'],
-      theme: ThemeSelection.values.firstWhere((e) => e.name == map['theme']),
-      subSection: map['subSection'],
-      subject: map['subject'],
+      id: map[DbHelper.groupColId],
+      name: map[DbHelper.groupColName],
+      theme: ThemeSelection.values.firstWhere((e) => e.name == map[DbHelper.groupColTheme]),
+      subSection: map[DbHelper.groupColSubSection],
+      subject: map[DbHelper.groupColSubj],
     );
   }
 
@@ -53,7 +83,6 @@ class Category {
 
   Color get color => theme.color;
 }
-
 
 class Event {
   late String title;
