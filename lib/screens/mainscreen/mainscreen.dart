@@ -5,6 +5,7 @@ import 'package:myapp/model/theme_selection.dart';
 import 'package:myapp/screens/add_participant_screen/addParticipantScreen.dart';
 import 'package:myapp/screens/homescreen/homescreen.dart';
 import 'package:myapp/screens/mainscreen/mainscreen_tile.dart';
+import 'package:path/path.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class MainScreen extends StatefulWidget {
@@ -48,44 +49,6 @@ class _MainScreenState extends State<MainScreen> {
 
   //for creating events in calendar
   Map<DateTime, List<Event>> events = {};
-  void _longPressedDay(DateTime day, DateTime focusedDay) {
-    var input = TextEditingController();
-    showDialog(
-        context: context,
-        builder: (_) {
-          return AlertDialog(
-            title: Text("Add Event"),
-            content: TextField(
-              controller: input,
-              decoration: InputDecoration(border: OutlineInputBorder()),
-            ),
-            actions: [
-              TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text("Cancel")),
-              ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      if (events[day] != null) {
-                        events[day]?.add(Event(input.text));
-                      } else {
-                        events[day] = [Event(input.text)];
-                      }
-                    });
-                    Navigator.pop(context);
-                  },
-                  child: Text("Add")),
-            ],
-          );
-        });
-    setState(() {
-      today = day;
-    });
-  }
-
-  List<Event> eventsForDay(DateTime today) {
-    return events[today] ?? [];
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -126,20 +89,23 @@ class _MainScreenState extends State<MainScreen> {
         ),
         body: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TableCalendar(
-                onDayLongPressed: _longPressedDay,
-                eventLoader: eventsForDay,
-                rowHeight: 43,
-                headerStyle: HeaderStyle(
-                    formatButtonVisible: false, titleCentered: true),
-                availableGestures: AvailableGestures.all,
-                selectedDayPredicate: (day) => isSameDay(day, today),
-                focusedDay: today,
-                firstDay: DateTime.utc(2010, 10, 16),
-                lastDay: DateTime(2030, 3, 14),
-                onDaySelected: selectedDay,
+
+
+            Container(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TableCalendar(
+                  rowHeight: 43,
+                  headerStyle: HeaderStyle(
+                      formatButtonVisible: false, titleCentered: true),
+                  availableGestures: AvailableGestures.all,
+                  selectedDayPredicate: (day) => isSameDay(day, today),
+                  focusedDay: today,
+                  firstDay: DateTime.utc(2010, 10, 16),
+                  lastDay: DateTime(2030, 3, 14),
+                  onDaySelected: selectedDay,
+                ),
+
               ),
             ),
             TabBar(
@@ -156,31 +122,26 @@ class _MainScreenState extends State<MainScreen> {
             Expanded(
               child: TabBarView(
                 children: [
-                  ListView.builder(
-                    itemCount: eventsForDay(today).length,
-                    itemBuilder: (BuildContext context, int index) {
-                      print(eventsForDay(today).length);
-                      var event = eventsForDay(today)[index];
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Card(
-                          child: ListTile(
-                            title: Text(event.title),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                    onPressed: () {}, icon: Icon(Icons.edit)),
-                                IconButton(
-                                    onPressed: () {},
-                                    icon: Icon(Icons.cancel_rounded)),
-                              ],
-                            ),
+                  FutureBuilder(future: fetchEvents(), builder: (Context, snapshot){
+                    var events = snapshot.data;
+                    return ListView.builder(
+                      itemCount: events == null ? 0 : events.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        var filtered = events![index];
+                        return ListTile(
+                          title: Text(filtered['${DbHelper.eventColName}']),
+                          subtitle: Text(filtered["${DbHelper.eventColDate}"]),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(onPressed: (){}, icon: Icon(Icons.edit)),
+                              IconButton(onPressed: (){}, icon: Icon(Icons.delete)),
+                            ],
                           ),
-                        ),
-                      );
-                    },
-                  ),
+                        );
+                      },
+                    );
+                  }),
                   FutureBuilder(
                       future: fetchMemebers(),
                       builder: (context, snapshot) {
@@ -211,5 +172,16 @@ class _MainScreenState extends State<MainScreen> {
         ),
       ),
     );
+  }
+
+  void addEvent(input, day) {
+    var event = Event.withoutId(title: input, date: day.toString(), groupId: widget.catID);
+    DbHelper.addEvent(event);
+    setState(() {});
+  }
+  Future<List<Map<String, dynamic>>> fetchEvents() {
+    final events = DbHelper.fetchEvent(widget.catID);
+    setState(() {});
+    return events;
   }
 }

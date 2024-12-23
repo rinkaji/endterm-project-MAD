@@ -5,7 +5,7 @@ import 'package:path/path.dart';
 class DbHelper {
   //db constants
   static const String dbName = "attendance.db";
-  static const int dbVersion = 2;
+  static const int dbVersion = 3;
 
   //table constants
 
@@ -36,12 +36,14 @@ class DbHelper {
   static const String eventColId = "event_id";
   static const String eventColName = "event_name";
   static const String eventColDate = "event_date";
+  static const String eventColGroupId = "event_group_id";
 
-  //events_in_group table
-  static const String eventGroupTb = "event_group";
-  static const String eventGroupColId = "event_group_id";
-  static const String eventGroupColGroupId = "group_id";
-  static const String eventGroupColEventId = "event_id";
+
+  // //events_in_group table
+  // static const String eventGroupTb = "event_group";
+  // static const String eventGroupColId = "event_group_id";
+  // static const String eventGroupColGroupId = "group_id";
+  // static const String eventGroupColEventId = "event_id";
 
   static Future<Database> openDb() async {
     var path = join(await getDatabasesPath(), dbName);
@@ -70,13 +72,23 @@ class DbHelper {
     var createEventTb = '''CREATE TABLE IF NOT EXISTS $eventTb(
     $eventColId INTEGER PRIMARY KEY AUTOINCREMENT,
     $eventColName VARCHAR(200),
-    $eventColDate VARCHAR(200)
+    $eventColDate VARCHAR(200),
+    $eventColGroupId INTEGER,
+    FOREIGN KEY ($eventColGroupId) REFERENCES $groupTb ($groupColId) ON DELETE CASCADE ON UPDATE CASCADE
     );''';
-    var createEventGroupTb = '''CREATE TABLE IF NOT EXISTS $eventGroupTb(
-    $eventGroupColId INTEGER PRIMARY KEY AUTOINCREMENT,
-    $eventGroupColGroupId INT,
-    $eventGroupColEventId INT
-    );''';
+    //SqfliteDatabaseException (DatabaseException(table event has no column named group_id (code 1 SQLITE_ERROR): , 
+    //while compiling: INSERT INTO event (event_name, event_date, group_id) VALUES (?, ?, ?)) 
+    //sql 'INSERT INTO event (event_name, event_date, group_id) VALUES (?, ?, ?)' args [mskbd, 2024-12-24 00:00:00.000Z, 29])
+    
+    
+    
+    
+    
+    // var createEventGroupTb = '''CREATE TABLE IF NOT EXISTS $eventGroupTb(
+    // $eventGroupColId INTEGER PRIMARY KEY AUTOINCREMENT,
+    // $eventGroupColGroupId INT,
+    // $eventGroupColEventId INT
+    // );''';
     var db = await openDatabase(
       path,
       version: dbVersion,
@@ -89,8 +101,8 @@ class DbHelper {
         print("$attendanceTb created");
         db.execute(createEventTb);
         print("$eventTb created");
-        db.execute(createEventGroupTb);
-        print("$eventGroupTb created");
+        // db.execute(createEventGroupTb);
+        // print("$eventGroupTb created");
       },
       onUpgrade: (db, oldVersion, newVersion) {
         if (newVersion <= oldVersion) return;
@@ -102,8 +114,8 @@ class DbHelper {
         db.execute(createAttendanceTb);
         db.execute("DROP TABLE IF EXISTS $eventTb");
         db.execute(createEventTb);
-        db.execute("DROP TABLE IF EXISTS $eventGroupTb");
-        db.execute(createEventGroupTb);
+        // db.execute("DROP TABLE IF EXISTS $eventGroupTb");
+        // db.execute(createEventGroupTb);
         print("dropped and new table created");
       },
     );
@@ -133,6 +145,11 @@ class DbHelper {
     return result;
   }
 
+  static void deleteGroup(Category category)async{
+    final db = await openDb();
+    await db.delete(groupTb, where: "$groupColId = ?" , whereArgs: [category.id]);
+  }
+
   static Future<int> addMember(Participant participant) async {
     var db = await DbHelper.openDb();
     int id = await db.insert(memberTb, participant.toMapWithoutId());
@@ -154,6 +171,7 @@ class DbHelper {
     return result;
   }
 
+
   static Future<int> updateMember(Participant participant) async {
     var db = await DbHelper.openDb();
     int result = await db.update(memberTb, participant.toMap(),
@@ -167,6 +185,20 @@ class DbHelper {
     int result = await db.delete(memberTb,
         where: '${DbHelper.memberColId} = ?', whereArgs: [id]);
     print('${result} member updated');
+
+  
+  //for event table queries
+  static Future<int>  addEvent(Event event) async {
+    var db = await DbHelper.openDb();
+    int id = await db.insert(eventTb, event.toMapWithoutId());
+    print("last inserted $id");
+    return id;
+  }
+  static Future<List<Map<String, Object?>>> fetchEvent(int groupId) async{
+    var db = await DbHelper.openDb();
+    var result = await db.query(eventTb, columns: [eventColId, eventColName, eventColDate, eventColGroupId], where: "${eventColGroupId} = ?", whereArgs: [groupId]);
+    print("${result} member fetched");
+
     return result;
   }
 }

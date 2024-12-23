@@ -20,7 +20,8 @@ class _HomescreenState extends State<Homescreen> {
     return category;
   }
 
-  void delete(id) {
+  void delete(Category category) {
+    DbHelper.deleteGroup(category);
     setState(() {});
   }
 
@@ -28,6 +29,7 @@ class _HomescreenState extends State<Homescreen> {
     DbHelper.updateGroup(category);
     setState(() {});
   }
+  
 
   @override
   Widget build(BuildContext context) {
