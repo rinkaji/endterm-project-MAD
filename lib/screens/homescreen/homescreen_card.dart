@@ -59,7 +59,7 @@ class HomeScreenCard extends StatelessWidget {
                       ),
                       PopupMenuItem(
                         height: 30,
-                        onTap: () => deleteItem(item.id),
+                        onTap: () => deleteItem(item),
                         child: Text("Delete",
                             style: TextStyle(color: Colors.black, fontWeight: FontWeight.w400)),
                       ),

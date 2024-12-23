@@ -21,16 +21,16 @@ class _HomescreenState extends State<Homescreen> {
     return category;
   }
 
-  void delete(id) {
-    setState(() {
-      
-    });
+  void delete(Category category) {
+    DbHelper.deleteGroup(category);
+    setState(() {});
   }
 
   void edit(Category category) {
-    DbHelper.update(category);
+    DbHelper.updateGroup(category);
     setState(() {});
   }
+  
 
 
   @override

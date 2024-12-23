@@ -29,10 +29,9 @@ class Participant {
 
   factory Participant.fromMap(Map<String, dynamic> map) {
     return Participant(
-      ptID: map[DbHelper.memberColId],
-      catID: map[DbHelper.memberColGroupId], 
-      name: map[DbHelper.memberColName]
-    );
+        ptID: map[DbHelper.memberColId],
+        catID: map[DbHelper.memberColGroupId],
+        name: map[DbHelper.memberColName]);
   }
 }
 
@@ -75,7 +74,8 @@ class Category {
     return Category(
       id: map[DbHelper.groupColId],
       name: map[DbHelper.groupColName],
-      theme: ThemeSelection.values.firstWhere((e) => e.name == map[DbHelper.groupColTheme]),
+      theme: ThemeSelection.values
+          .firstWhere((e) => e.name == map[DbHelper.groupColTheme]),
       subSection: map[DbHelper.groupColSubSection],
       subject: map[DbHelper.groupColSubj],
     );
@@ -84,7 +84,43 @@ class Category {
   Color get color => theme.color;
 }
 
+//for event Class
 class Event {
+  late int id;
   late String title;
-  Event(this.title);
+  late String date;
+  late int groupId;
+
+  Event(
+      {required this.id,
+      required this.title,
+      required this.date,
+      required this.groupId});
+  Event.withoutId(
+      {required this.title, required this.date, required this.groupId});
+
+  Map<String, dynamic> toMap() {
+    return {
+      DbHelper.eventColId: id,
+      DbHelper.eventColName: title,
+      DbHelper.eventColDate: date,
+      DbHelper.eventColGroupId: groupId,
+    };
+  }
+
+  Map<String, dynamic> toMapWithoutId() {
+    return {
+      DbHelper.eventColName: title,
+      DbHelper.eventColDate: date,
+      DbHelper.eventColGroupId: groupId,
+    };
+  }
+
+  factory Event.fromMap(Map<String, dynamic> map) {
+    return Event(
+        id: map[DbHelper.eventColId],
+        title: map[DbHelper.eventColName],
+        date: map[DbHelper.eventColDate],
+        groupId: map[DbHelper.eventColGroupId]);
+  }
 }
