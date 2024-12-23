@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/data/data.dart';
+import 'package:myapp/helper/dbHelper.dart';
 import 'package:myapp/model/model.dart';
 import 'package:myapp/model/theme_selection.dart';
 import 'package:myapp/screens/mainscreen/mainscreen.dart';
 
 class AddParticipantScreen extends StatefulWidget {
-  AddParticipantScreen({super.key, required this.catID, 
-  required this.catName, 
-  required this.catTheme, 
-  // required this.cate
-  });
+  AddParticipantScreen(
+      {super.key,
+      required this.catID,
+      required this.catName,
+      required this.catTheme});
 
   final int catID;
   final String catName;
   final ThemeSelection catTheme;
-  // final Category cate;
+
   @override
   State<AddParticipantScreen> createState() => _AddParticipantScreenState();
 }
@@ -28,8 +29,7 @@ class _AddParticipantScreenState extends State<AddParticipantScreen> {
     return Scaffold(
       appBar: AppBar(
         foregroundColor: Colors.black,
-        //backgroundColor: widget.catTheme.color,
-        
+        backgroundColor: widget.catTheme.color,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
           icon: Icon(
@@ -42,19 +42,24 @@ class _AddParticipantScreenState extends State<AddParticipantScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () => 
-              tempParticipant.isEmpty
+            onPressed: () => tempParticipant.isEmpty
                 ? Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (_) => MainScreen(
                         catID: widget.catID,
-                        //catName: widget.catName,
-                        //catTheme:widget.catTheme,
+                        catName: widget.catName,
+                        catTheme: widget.catTheme,
                       ),
                     ),
                   )
-                : adding(tempParticipant.length),
-            child: (tempParticipant.isEmpty) ? Text("Skip",style: TextStyle(color: Colors.black, fontSize: 16),) : Text("Create",style: TextStyle(color: Colors.black, fontSize: 16)),
+                : adding(),
+            child: (tempParticipant.isEmpty)
+                ? Text(
+                    "Skip",
+                    style: TextStyle(color: Colors.black, fontSize: 16),
+                  )
+                : Text("Create",
+                    style: TextStyle(color: Colors.black, fontSize: 16)),
           ),
         ],
       ),
@@ -63,16 +68,23 @@ class _AddParticipantScreenState extends State<AddParticipantScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Add people in ${widget.catName}",style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),),
-            SizedBox(height: 5,),
+            Text(
+              "Add people in \"${widget.catName}\"",
+              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+            ),
+            SizedBox(
+              height: 5,
+            ),
             TextField(
               controller: personCtrl,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
               ),
-              onChanged: (context)=>setState(() {}),
+              onChanged: (context) => setState(() {}),
             ),
-            SizedBox(height: 10,),
+            SizedBox(
+              height: 10,
+            ),
             Expanded(
               child: ListView.builder(
                 padding: EdgeInsets.only(top: 8),
@@ -96,19 +108,27 @@ class _AddParticipantScreenState extends State<AddParticipantScreen> {
                 },
               ),
             ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                backgroundColor: personCtrl.text.isEmpty ? Colors.grey.shade300 : Colors.grey.shade300
-                //widget.catTheme.color 
-                ,
+            SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    backgroundColor: personCtrl.text.isEmpty
+                        ? Colors.grey.shade300
+                        : widget.catTheme.color),
+                onPressed: () =>
+                    (personCtrl.text.isEmpty) ? null : addParticipant(),
+                child: Text(
+                  "Add",
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color:
+                          personCtrl.text.isEmpty ? Colors.grey : Colors.black),
+                ),
               ),
-            onPressed: () => (personCtrl.text.isEmpty) ? null : addParticipant(),
-            child: Text("Add", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: personCtrl.text.isEmpty ? Colors.grey : Colors.black),),
             ),
-          ),
           ],
         ),
       ),
@@ -117,9 +137,9 @@ class _AddParticipantScreenState extends State<AddParticipantScreen> {
 
   void addParticipant() {
     setState(() {
-      // tempParticipant.add(
-      //   Participant(ptID: widget.,catID: widget.catID, name: personCtrl.text),
-      // );
+      tempParticipant.add(
+        Participant.withoutId(catID: widget.catID, name: personCtrl.text),
+      );
       personCtrl.clear();
       print(tempParticipant.length);
     });
@@ -132,8 +152,11 @@ class _AddParticipantScreenState extends State<AddParticipantScreen> {
     });
   }
 
-  adding(int filteredParticipant) {
-    participant.addAll(tempParticipant);
+  void adding() async {
+    for (var member in tempParticipant) {
+      await DbHelper.addMember(
+          Participant.withoutId(catID: widget.catID, name: member.name));
+    }
     setState(() {
       tempParticipant.clear();
     });
@@ -141,8 +164,8 @@ class _AddParticipantScreenState extends State<AddParticipantScreen> {
       MaterialPageRoute(
         builder: (_) => MainScreen(
           catID: widget.catID,
-          //catName: widget.catName,
-          //catTheme: widget.catTheme,
+          catName: widget.catName,
+          catTheme: widget.catTheme,
         ),
       ),
     );

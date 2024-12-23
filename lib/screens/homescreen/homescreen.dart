@@ -14,12 +14,6 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
-  // createGroup(String name, int id) async {
-  //     final newCatge
-  //     DbHelper.createGroup(category);
-
-  // }
-
   Future<List<Map<String, dynamic>>> fetchGroup() {
     final category = DbHelper.fetchGroup();
     setState(() {});
@@ -28,22 +22,16 @@ class _HomescreenState extends State<Homescreen> {
 
   void delete(id) {
     setState(() {
-      category.removeAt(id);
-      print(category.length);
+      
     });
   }
 
   void edit(int index, edited) {
     setState(() {
-      category[index].name = edited;
+      
     });
   }
 
-  // void add(added, id) {
-  //   setState(() {
-  //     fetchGroup();
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -107,11 +95,4 @@ class _HomescreenState extends State<Homescreen> {
       ),
     );
   }
-
-  // void fetchCategories() async {
-  //   final result = await DbHelper.fetchGroup();
-  //   setState(() {
-  //     // category = result;
-  //   });
-  // }
 }

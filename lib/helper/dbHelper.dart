@@ -17,8 +17,8 @@ class DbHelper {
   static const String groupColSubj = 'group_subj';
   static const String groupColSubSection = 'group_subsection';
 
-  // SqfliteDatabaseException (DatabaseException(table groups has no column named group_subj (code 1 SQLITE_ERROR): , 
-  //while compiling: INSERT INTO "groups" (group_name, group_theme, group_subj, group_subsection) VALUES (?, ?, ?, ?)) 
+  // SqfliteDatabaseException (DatabaseException(table groups has no column named group_subj (code 1 SQLITE_ERROR): ,
+  //while compiling: INSERT INTO "groups" (group_name, group_theme, group_subj, group_subsection) VALUES (?, ?, ?, ?))
   //sql 'INSERT INTO "groups" (group_name, group_theme, group_subj, group_subsection) VALUES (?, ?, ?, ?)' args [nckc. , Sky, , ])
 
   // members table
@@ -35,7 +35,7 @@ class DbHelper {
   static const String attendanceDate = "attendance_date";
   static const String attendanceStatus = "attendance_status";
 
-  //events table 
+  //events table
   static const String eventTb = "event";
   static const String eventColId = "event_id";
   static const String eventColName = "event_name";
@@ -46,9 +46,6 @@ class DbHelper {
   static const String eventGroupColId = "event_group_id";
   static const String eventGroupColGroupId = "group_id";
   static const String eventGroupColEventId = "event_id";
-  
-
-  
 
   static Future<Database> openDb() async {
     var path = join(await getDatabasesPath(), dbName);
@@ -123,14 +120,27 @@ class DbHelper {
     var id = await db.insert(groupTb, category.toMapWithoutId());
     print('${id} group added');
     return id;
-    
   }
-  
+
   static Future<List<Map<String, dynamic>>> fetchGroup() async {
     final db = await openDb();
     var result = await db.query(groupTb);
     print('${result} group fetched');
     return result;
     // return result.map((map) => Category.fromMap(map)).toList();
+  }
+
+  static Future<int> addMember(Participant participant) async {
+    var db = await DbHelper.openDb();
+    int id = await db.insert(memberTb, participant.toMapWithoutId());
+    print('${id} member added');
+    return id;
+  }
+
+  static Future<List<Map<String, dynamic>>> fetchMember(int id) async {
+    var db = await DbHelper.openDb();
+    var result = await db.query(memberTb,columns: [DbHelper.memberColId, DbHelper.memberColGroupId, DbHelper.memberColName], where: '${DbHelper.memberColGroupId} = ?', whereArgs: [id]);
+    print('${result} member fetched');
+    return result;
   }
 }
