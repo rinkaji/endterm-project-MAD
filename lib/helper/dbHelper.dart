@@ -132,8 +132,17 @@ class DbHelper {
     return result;
   }
 
-  static void delete() async{
-    var db = await openDb();
-    
+  static Future<int> addMember(Participant participant) async {
+    var db = await DbHelper.openDb();
+    int id = await db.insert(memberTb, participant.toMapWithoutId());
+    print('${id} member added');
+    return id;
+  }
+
+  static Future<List<Map<String, dynamic>>> fetchMember(int id) async {
+    var db = await DbHelper.openDb();
+    var result = await db.query(memberTb,columns: [DbHelper.memberColId, DbHelper.memberColGroupId, DbHelper.memberColName], where: '${DbHelper.memberColGroupId} = ?', whereArgs: [id]);
+    print('${result} member fetched');
+    return result;
   }
 }
