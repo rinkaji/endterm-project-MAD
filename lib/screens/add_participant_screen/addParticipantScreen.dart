@@ -1,28 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/data/data.dart';
 import 'package:myapp/model/model.dart';
+import 'package:myapp/model/theme_selection.dart';
 import 'package:myapp/screens/mainscreen/mainscreen.dart';
 
 class AddParticipantScreen extends StatefulWidget {
-  AddParticipantScreen({super.key, required this.catID, required this.catName, required this.catTheme});
+  AddParticipantScreen({super.key, required this.catID, required this.catName, required this.catTheme, required this.cate});
 
-  var catID;
-  var catName;
-  var catTheme;
-
+  final int catID;
+  final String catName;
+  final ThemeSelection catTheme;
+  final Category cate;
   @override
   State<AddParticipantScreen> createState() => _AddParticipantScreenState();
 }
 
 class _AddParticipantScreenState extends State<AddParticipantScreen> {
   var personCtrl = TextEditingController();
+  List<Participant> tempParticipant = [];
   Color btnColor = Colors.grey.shade300;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         foregroundColor: Colors.black,
-        backgroundColor: widget.catTheme,
+        backgroundColor: widget.catTheme.color,
         
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
@@ -94,7 +96,7 @@ class _AddParticipantScreenState extends State<AddParticipantScreen> {
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                backgroundColor: personCtrl.text.isEmpty ? Colors.grey.shade300 : widget.catTheme,
+                backgroundColor: personCtrl.text.isEmpty ? Colors.grey.shade300 : widget.catTheme.color,
               ),
             onPressed: () => (personCtrl.text.isEmpty) ? null : addParticipant(),
             child: Text("Add", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: personCtrl.text.isEmpty ? Colors.grey : Colors.black),),
@@ -106,11 +108,11 @@ class _AddParticipantScreenState extends State<AddParticipantScreen> {
     );
   }
 
-  addParticipant() {
+  void addParticipant() {
     setState(() {
-      tempParticipant.add(
-        Participant(catID: widget.catID, name: personCtrl.text),
-      );
+      // tempParticipant.add(
+      //   Participant(ptID: widget.,catID: widget.catID, name: personCtrl.text),
+      // );
       personCtrl.clear();
       print(tempParticipant.length);
     });

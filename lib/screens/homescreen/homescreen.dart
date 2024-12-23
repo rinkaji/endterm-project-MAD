@@ -21,7 +21,7 @@ class _HomescreenState extends State<Homescreen> {
     });
   }
 
-  void edit(index, edited) {
+  void edit(int index, edited) {
     setState(() {
       category[index].name = edited;
     });
@@ -29,9 +29,9 @@ class _HomescreenState extends State<Homescreen> {
 
   void add(added, id) {
     setState(() {
-      category.add(
-        Category(id: id, name: added),
-      );
+      // category.add(
+      //   Category(id: id, name: added),
+      // );
     });
   }
 
@@ -47,7 +47,7 @@ class _HomescreenState extends State<Homescreen> {
             context,
             MaterialPageRoute(
               builder: (_) => CreateScreen(
-                addcategory: add,
+                //addcategory: add,
               ),
             ),
           ),
@@ -76,7 +76,7 @@ class _HomescreenState extends State<Homescreen> {
             itemCount: category.length,
             itemBuilder: (BuildContext context, int index) {
               final item = category[index];
-              return HomeScreenCard(item: item, deleteItem: delete, editItem: edit, index: index, itemColor: item.color,);
+              return HomeScreenCard(item: item, deleteItem: delete, editItem: edit,);
             }));
   }
 }
