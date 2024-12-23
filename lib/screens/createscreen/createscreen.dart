@@ -156,10 +156,7 @@ class _CreateScreenState extends State<CreateScreen> {
     );
   }
 
-  // void fetchGroup() async {
-  //   category = await DbHelper.fetchGroup();
-  //   setState(() {});
-  // }
+
 
   void createGroup() async {
     if (nameCtrl.text.isNotEmpty) {

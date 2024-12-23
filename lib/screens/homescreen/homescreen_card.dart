@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/helper/dbHelper.dart';
 import 'package:myapp/model/model.dart';
 import 'package:myapp/screens/mainscreen/mainscreen.dart';
 
@@ -15,6 +16,8 @@ class HomeScreenCard extends StatelessWidget {
   Function deleteItem;
   Function editItem;
   var categoryName;
+  var categorySubject;
+  var categorySection;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -73,19 +76,37 @@ class HomeScreenCard extends StatelessWidget {
         context: ctx,
         builder: (_) => AlertDialog(
               title: Text("edit"),
-              content: TextField(
-                controller: categoryName =
-                    TextEditingController(text: item.name),
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: categoryName = TextEditingController(text: item.name),
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  SizedBox(height: 12,),
+                  TextField(
+                    controller: categorySection = TextEditingController(text: item.subSection),
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  SizedBox(height: 12,),
+                  TextField(
+                    controller: categorySubject = TextEditingController(text: item.subject),
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ],
               ),
               actions: [
                 ElevatedButton(
                     onPressed: () => Navigator.pop(ctx), child: Text("cancel")),
                 ElevatedButton(
                     onPressed: () {
-                      editItem(item.id, categoryName.text.toString());
+                      editItem(item);
                       Navigator.pop(ctx);
                     },
                     child: Text("edit")),
