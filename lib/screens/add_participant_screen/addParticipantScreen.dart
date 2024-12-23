@@ -3,6 +3,7 @@ import 'package:myapp/data/data.dart';
 import 'package:myapp/helper/dbHelper.dart';
 import 'package:myapp/model/model.dart';
 import 'package:myapp/model/theme_selection.dart';
+import 'package:myapp/screens/homescreen/homescreen.dart';
 import 'package:myapp/screens/mainscreen/mainscreen.dart';
 
 class AddParticipantScreen extends StatefulWidget {
@@ -31,7 +32,7 @@ class _AddParticipantScreenState extends State<AddParticipantScreen> {
         foregroundColor: Colors.black,
         backgroundColor: widget.catTheme.color,
         leading: IconButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_)=>Homescreen())),
           icon: Icon(
             Icons.arrow_back,
           ),

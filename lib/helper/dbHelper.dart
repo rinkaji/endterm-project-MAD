@@ -17,10 +17,6 @@ class DbHelper {
   static const String groupColSubj = 'group_subj';
   static const String groupColSubSection = 'group_subsection';
 
-  // SqfliteDatabaseException (DatabaseException(table groups has no column named group_subj (code 1 SQLITE_ERROR): ,
-  //while compiling: INSERT INTO "groups" (group_name, group_theme, group_subj, group_subsection) VALUES (?, ?, ?, ?))
-  //sql 'INSERT INTO "groups" (group_name, group_theme, group_subj, group_subsection) VALUES (?, ?, ?, ?)' args [nckc. , Sky, , ])
-
   // members table
   static const String memberTb = "members";
   static const String memberColId = 'member_id';
@@ -127,7 +123,13 @@ class DbHelper {
     var result = await db.query(groupTb);
     print('${result} group fetched');
     return result;
-    // return result.map((map) => Category.fromMap(map)).toList();
+  }
+
+  static Future<int> update(Category category) async {
+    final db = await openDb();
+    var result = await db.update(groupTb, category.toMap(), where: "$groupColId = ?", whereArgs: [category.id] );
+    print('${result} group fetched');
+    return result;
   }
 
   static Future<int> addMember(Participant participant) async {
