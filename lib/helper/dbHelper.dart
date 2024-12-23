@@ -4,7 +4,7 @@ import 'package:path/path.dart';
 class Dbhelper {
   //db constants
   static const String dbName = "attendance.db";
-  static const int dbVersion = 4;
+  static const int dbVersion = 1;
 
   //table constants
 
@@ -28,11 +28,24 @@ class Dbhelper {
   static const String attendanceDate = "attendance_date";
   static const String attendanceStatus = "attendance_status";
 
+  //events table 
+  static const String eventTb = "event";
+  static const String eventColId = "event_id";
+  static const String eventColName = "event_name";
+  static const String eventColDate = "event_date";
+
+  //events_in_group table
+  static const String eventGroupTb = "event_group";
+  static const String eventGroupColId = "event_group_id";
+  static const String eventGroupColGroupId = "group_id";
+  static const String eventGroupColEventId = "event_id";
+  
+
   static void openDb() async {
     var path = join(await getDatabasesPath(), dbName);
     var createGroupTb = '''CREATE TABLE IF NOT EXISTS $groupTb (
       $groupColId INTEGER PRIMARY KEY AUTOINCREMENT,
-      $groupColName VARCHAR(200)
+      $groupColName VARCHAR(200),
       $groupColTheme VARCHAR(200)
     );''';
     var createMemberTb = '''CREATE TABLE IF NOT EXISTS $memberTb (
@@ -50,6 +63,16 @@ class Dbhelper {
       FOREIGN KEY ($attendanceColMemberId) REFERENCES $memberTb ($memberColId) ON DELETE CASCADE ON UPDATE CASCADE,
       FOREIGN KEY ($attendanceColGroupId) REFERENCES $groupTb ($groupColId) ON DELETE CASCADE ON UPDATE CASCADE
     );''';
+    var createEventTb = '''CREATE TABLE IF NOT EXISTS $eventTb(
+    $eventColId INTEGER PRIMARY KEY AUTOINCREMENT,
+    $eventColName VARCHAR(200),
+    $eventColDate VARCHAR(200)
+    );''';
+    var createEventGroupTb = '''CREATE TABLE IF NOT EXISTS $eventGroupTb(
+    $eventGroupColId INTEGER PRIMARY KEY AUTOINCREMENT,
+    $eventGroupColGroupId INT,
+    $eventGroupColEventId INT
+    );''';
     openDatabase(
       path,
       version: dbVersion,
@@ -60,6 +83,10 @@ class Dbhelper {
         print("$memberTb created");
         db.execute(createAttendanceTb);
         print("$attendanceTb created");
+        db.execute(createEventTb);
+        print("$eventTb created");
+        db.execute(createEventGroupTb);
+        print("$eventGroupTb created");
       },
       onUpgrade: (db, oldVersion, newVersion) {
         if(newVersion <= oldVersion) return;
@@ -69,6 +96,10 @@ class Dbhelper {
         db.execute(createMemberTb);
         db.execute("DROP TABLE IF EXISTS $attendanceTb");
         db.execute(createAttendanceTb);
+        db.execute("DROP TABLE IF EXISTS $eventTb");
+        db.execute(createEventTb);
+        db.execute("DROP TABLE IF EXISTS $eventGroupTb");
+        db.execute(createEventGroupTb);
         print("dropped and new table created");
       },
     );

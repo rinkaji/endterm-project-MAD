@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myapp/data/data.dart';
+import 'package:myapp/helper/dbHelper.dart';
 import 'package:myapp/model/model.dart';
 import 'package:myapp/screens/createscreen/createscreen.dart';
 import 'package:myapp/screens/homescreen/homescreen_card.dart';
@@ -37,6 +38,7 @@ class _HomescreenState extends State<Homescreen> {
 
   @override
   Widget build(BuildContext context) {
+    Dbhelper.openDb();
     print(category.length);
     return Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
