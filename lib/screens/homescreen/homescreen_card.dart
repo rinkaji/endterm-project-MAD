@@ -5,13 +5,12 @@ import 'package:myapp/model/theme_selection.dart';
 import 'package:myapp/screens/mainscreen/mainscreen.dart';
 
 class HomeScreenCard extends StatelessWidget {
-  HomeScreenCard({
-    super.key,
-    required this.item,
-    required this.deleteItem,
-    required this.editItem,
-    required this.theme
-  });
+  HomeScreenCard(
+      {super.key,
+      required this.item,
+      required this.deleteItem,
+      required this.editItem,
+      required this.theme});
 
   final Category item;
   Function deleteItem;
@@ -20,7 +19,7 @@ class HomeScreenCard extends StatelessWidget {
   var categoryName;
   var categorySubject;
   var categorySection;
-  
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -49,7 +48,7 @@ class HomeScreenCard extends StatelessWidget {
                     return [
                       PopupMenuItem(
                         height: 30,
-                        onTap: ()=> openDialog(context),
+                        onTap: () => openDialog(context),
                         child: Text(
                           "Edit",
                           style: TextStyle(
@@ -60,7 +59,9 @@ class HomeScreenCard extends StatelessWidget {
                         height: 30,
                         onTap: () => deleteItem(item),
                         child: Text("Delete",
-                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.w400)),
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w400)),
                       ),
                     ];
                   }),
@@ -69,61 +70,80 @@ class HomeScreenCard extends StatelessWidget {
               decoration: BoxDecoration(
                   color: item.color,
                   borderRadius: BorderRadius.all(Radius.circular(10))),
-            ))
-        );
+            )));
   }
 
   void openDialog(context) {
     showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-              backgroundColor: Colors.white,
-              title: Text("edit",style: TextStyle(color: Colors.black),),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    controller: categoryName = TextEditingController(text: item.name),
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                    ),
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  SizedBox(height: 12,),
-                  TextField(
-                    controller: categorySection = TextEditingController(text: item.subSection),
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                    ),
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  SizedBox(height: 12,),
-                  TextField(
-                    controller: categorySubject = TextEditingController(text: item.subject),
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                    ),
-                    style: TextStyle(color: Colors.black),
-                  ),
-                ],
+      context: context,
+      builder: (_) => AlertDialog(
+        backgroundColor: Colors.white,
+        title: Text(
+          "edit",
+          style: TextStyle(color: Colors.black),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: categoryName = TextEditingController(text: item.name),
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
               ),
-              actions: [
-                TextButton(
-                    onPressed: () => Navigator.pop(context), child: Text("Cancel",style: TextStyle(color: Colors.black),)),
-                ElevatedButton(
-                    onPressed: () {
-                      if(categoryName.text.isNotEmpty){
-                      var category = Category(id: item.id, name: categoryName.text, theme:  theme, subject: categorySubject.text, subSection: categorySection.text);
-                      editItem(category);
-                      Navigator.pop(context);
-                      }
-                    },
-                    child: Text("Edit", style: TextStyle(color: Colors.black),),
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-                ),
-                    
-              ],
-            ));
+              style: TextStyle(color: Colors.black),
+            ),
+            SizedBox(
+              height: 12,
+            ),
+            TextField(
+              controller: categorySection =
+                  TextEditingController(text: item.subSection),
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+              ),
+              style: TextStyle(color: Colors.black),
+            ),
+            SizedBox(
+              height: 12,
+            ),
+            TextField(
+              controller: categorySubject =
+                  TextEditingController(text: item.subject),
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+              ),
+              style: TextStyle(color: Colors.black),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(
+                "Cancel",
+                style: TextStyle(color: Colors.black),
+              )),
+          ElevatedButton(
+            onPressed: () {
+              if (categoryName.text.isNotEmpty) {
+                var category = Category(
+                    id: item.id,
+                    name: categoryName.text,
+                    theme: theme,
+                    subject: categorySubject.text,
+                    subSection: categorySection.text);
+                editItem(category);
+                Navigator.pop(context);
+              }
+            },
+            child: Text(
+              "Edit",
+              style: TextStyle(color: Colors.black),
+            ),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
+          ),
+        ],
+      ),
+    );
   }
-
 }

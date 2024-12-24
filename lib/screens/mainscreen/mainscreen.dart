@@ -23,6 +23,8 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  var input = TextEditingController();
+
   void editMember(Participant participant) {
     DbHelper.updateMember(participant);
     setState(() {});
@@ -79,9 +81,8 @@ class _MainScreenState extends State<MainScreen> {
           backgroundColor: widget.catTheme.color,
           leading: IconButton(
               onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_)=>Homescreen())
-                );
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (_) => Homescreen()));
               },
               icon: Icon(Icons.arrow_back)),
           centerTitle: true,
@@ -89,12 +90,12 @@ class _MainScreenState extends State<MainScreen> {
         ),
         body: Column(
           children: [
-
-
             Container(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TableCalendar(
+                  onDayLongPressed: (selectedDay, focusedDay) =>
+                      openDialog(context, selectedDay),
                   rowHeight: 43,
                   headerStyle: HeaderStyle(
                       formatButtonVisible: false, titleCentered: true),
@@ -105,7 +106,6 @@ class _MainScreenState extends State<MainScreen> {
                   lastDay: DateTime(2030, 3, 14),
                   onDaySelected: selectedDay,
                 ),
-
               ),
             ),
             TabBar(
@@ -122,49 +122,61 @@ class _MainScreenState extends State<MainScreen> {
             Expanded(
               child: TabBarView(
                 children: [
-                  FutureBuilder(future: fetchEvents(), builder: (Context, snapshot){
-                    var events = snapshot.data;
-                    return ListView.builder(
-                      itemCount: events == null ? 0 : events.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        var filtered = events![index];
-                        return ListTile(
-                          title: Text(filtered['${DbHelper.eventColName}']),
-                          subtitle: Text(filtered["${DbHelper.eventColDate}"]),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(onPressed: (){}, icon: Icon(Icons.edit)),
-                              IconButton(onPressed: (){}, icon: Icon(Icons.delete)),
-                            ],
-                          ),
-                        );
-                      },
-                    );
-                  }),
                   FutureBuilder(
-                      future: fetchMemebers(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Align(
-                            alignment: Alignment.center,
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                        var members = snapshot.data;
+                      future: fetchEvents(),
+                      builder: (Context, snapshot) {
+                        var events = snapshot.data;
                         return ListView.builder(
-                          itemCount: members == null ? 0 : members.length,
+                          itemCount: events == null ? 0 : events.length,
                           itemBuilder: (BuildContext context, int index) {
-                            var filtered = members![index];
-                            return MainScreenTile(
-                              filtered: Participant.fromMap(filtered),
-                              delMember: removeMember,
-                              updateMember: editMember
+                            var filtered = events![index];
+                            return ListTile(
+                              title: Text(filtered['${DbHelper.eventColName}']),
+                              subtitle:
+                                  Text(filtered["${DbHelper.eventColDate}"]),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                      onPressed: () => editEvent(
+                                          filtered[DbHelper.eventColId],
+                                          filtered[DbHelper.eventColName],
+                                          today,
+                                          widget.catID,
+                                          context),
+                                      icon: Icon(Icons.edit)),
+                                  IconButton(
+                                      onPressed: () => deleteEvent(
+                                          filtered[DbHelper.eventColId]),
+                                      icon: Icon(Icons.delete)),
+                                ],
+                              ),
                             );
                           },
                         );
                       }),
+                  FutureBuilder(
+                    future: fetchMemebers(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Align(
+                          alignment: Alignment.center,
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      var members = snapshot.data;
+                      return ListView.builder(
+                        itemCount: members == null ? 0 : members.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          var filtered = members![index];
+                          return MainScreenTile(
+                              filtered: Participant.fromMap(filtered),
+                              delMember: removeMember,
+                              updateMember: editMember);
+                        },
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
@@ -174,14 +186,90 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  void addEvent(input, day) {
-    var event = Event.withoutId(title: input, date: day.toString(), groupId: widget.catID);
-    DbHelper.addEvent(event);
-    setState(() {});
+  void openDialog(ctx, day) {
+    setState(() {
+      today = day;
+    });
+    showDialog(
+        context: ctx,
+        builder: (_) {
+          return AlertDialog(
+            title: Text("Add Event"),
+            content: TextField(
+              controller: input,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+              ),
+            ),
+            actions: [
+              ElevatedButton(
+                  onPressed: () => Navigator.pop(ctx), child: Text("cancel")),
+              ElevatedButton(
+                  onPressed: () => addEvent(day, ctx), child: Text("Add")),
+            ],
+          );
+        });
   }
+
+  void addEvent(day, ctx) {
+    if (input.text.isNotEmpty) {
+      var event = Event.withoutId(
+          title: input.text,
+          date: day.toString().split(" ")[0],
+          groupId: widget.catID);
+      DbHelper.addEvent(event);
+      setState(() {});
+      Navigator.pop(ctx);
+    }
+  }
+
   Future<List<Map<String, dynamic>>> fetchEvents() {
     final events = DbHelper.fetchEvent(widget.catID);
     setState(() {});
     return events;
+  }
+
+  void deleteEvent(int eventId) {
+    DbHelper.deleteEvent(eventId);
+    setState(() {});
+  }
+
+  void editEvent(int eventId, String eventName, date, int id, ctx) {
+    var editCtrl = TextEditingController(text: eventName);
+
+    showDialog(
+      context: ctx,
+      builder: (_) {
+        return AlertDialog(
+          title: Text("Edit Event"),
+          content: TextField(
+            controller: editCtrl,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+            ),
+          ),
+          actions: [
+            ElevatedButton(
+                onPressed: () => Navigator.pop(ctx), child: Text("Cancel")),
+            ElevatedButton(
+                onPressed: () {
+                  if (editCtrl.text.isNotEmpty) {
+                    DbHelper.updateEvent(
+                      Event(
+                        id: eventId,
+                        title: editCtrl.text,
+                        date: date.toString(),
+                        groupId: id,
+                      ),
+                    );
+                    setState(() {});
+                    Navigator.pop(ctx);
+                  }
+                },
+                child: Text("Edit")),
+          ],
+        );
+      },
+    );
   }
 }

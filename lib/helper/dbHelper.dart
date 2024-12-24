@@ -188,7 +188,17 @@ class DbHelper {
         where: "${eventColGroupId} = ?",
         whereArgs: [groupId]);
     print("${result} member fetched");
+   return result;
+  }
 
-    return result;
+  static void deleteEvent(int id) async {
+    var db = await DbHelper.openDb();
+    await db.delete(eventTb,
+        where: '${DbHelper.eventColId} = ?', whereArgs: [id]);
+  }
+
+  static void updateEvent(Event event) async{
+    var db = await DbHelper.openDb();
+    await db.update(eventTb, event.toMap(), where: "$eventColId = ?", whereArgs: [event.id]);
   }
 }
