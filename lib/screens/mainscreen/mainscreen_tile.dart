@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/helper/dbHelper.dart';
 import 'package:myapp/model/model.dart';
 import 'package:myapp/model/theme_selection.dart';
 import 'package:myapp/screens/reports_screen/reports_screen.dart';
+
+List membersStatus = [];
 
 class MainScreenTile extends StatefulWidget {
   MainScreenTile(
@@ -9,22 +12,39 @@ class MainScreenTile extends StatefulWidget {
       required this.filtered,
       required this.delMember,
       required this.updateMember,
+      // required this.addAttendance
+      required this.day,
       required this.theme
       });
 
   final Participant filtered;
   final Function delMember;
   final Function updateMember;
+  // final Function addAttendance;
+  final DateTime day;
+
+
   late ThemeSelection theme;
-  String dropdownValue = "Present";
+  String dropdownValue = "Status";
+  
 
   @override
   State<MainScreenTile> createState() => _MainScreenTileState();
 }
 
 class _MainScreenTileState extends State<MainScreenTile> {
+
+  
+  
+
+
   var memCtrl = TextEditingController();
   @override
+  addAttendance(date)async{
+    int id = await DbHelper.addAttendance(Attendance.withoutId(group_id: widget.filtered.catID, member_id: widget.filtered.ptID!, date: date.toString().split(" ")[0], status: widget.dropdownValue));
+    return "attendance $id added to the";
+  }
+  
   Widget build(BuildContext context) {
     return GestureDetector(
       onLongPress: openDialog,
@@ -35,15 +55,22 @@ class _MainScreenTileState extends State<MainScreenTile> {
           trailing: DropdownButton<String>(
             alignment: AlignmentDirectional.centerEnd,
             onChanged: (String? newValue) {
-              if (newValue != null) {
-                setState(() {
-                  widget.dropdownValue = newValue;
-                });
-                //saveAttendance(newValue); // Save the attendance
+              String oldvalue = widget.dropdownValue;
+              setState(() {
+                widget.dropdownValue = newValue!;
+              });
+              if(oldvalue != widget.dropdownValue && widget.dropdownValue != "Status"){
+                addAttendance(widget.day);
               }
+              
             },
             value: widget.dropdownValue,
             items: [
+              DropdownMenuItem<String>(
+                alignment: AlignmentDirectional.center,
+                child: Text("Status"),
+                value: "Status",
+              ),
               DropdownMenuItem<String>(
                 alignment: Alignment.centerLeft,
                 child: Text("Present"),
