@@ -5,7 +5,7 @@ import 'package:path/path.dart';
 class DbHelper {
   //db constants
   static const String dbName = "attendance.db";
-  static const int dbVersion = 4;
+  static const int dbVersion = 2;
 
   //table constants
 
@@ -60,11 +60,11 @@ class DbHelper {
       FOREIGN KEY ($memberColGroupId) REFERENCES $groupTb ($groupColId) ON DELETE CASCADE ON UPDATE CASCADE
     );''';
     var createAttendanceTb = '''CREATE TABLE IF NOT EXISTS $attendanceTb (
-      $attendanceColId INTEGER PRIMARY KEY AUTOINCREMENT,
       $attendanceColMemberId INTEGER, 
       $attendanceColGroupId INTEGER, 
       $attendanceDate TEXT,
       $attendanceStatus TEXT,
+      PRIMARY KEY($attendanceColGroupId, $attendanceColMemberId),
       FOREIGN KEY ($attendanceColMemberId) REFERENCES $memberTb ($memberColId) ON DELETE CASCADE ON UPDATE CASCADE,
       FOREIGN KEY ($attendanceColGroupId) REFERENCES $groupTb ($groupColId) ON DELETE CASCADE ON UPDATE CASCADE
     );''';
@@ -201,4 +201,18 @@ class DbHelper {
     var db = await DbHelper.openDb();
     await db.update(eventTb, event.toMap(), where: "$eventColId = ?", whereArgs: [event.id]);
   }
+
+
+  //for attendance table queries
+  static Future<int> addAttendance(Attendance attendance) async{
+    var db = await DbHelper.openDb();
+    int id = await db.insert(attendanceTb, attendance.toMapWithoutId(), conflictAlgorithm: ConflictAlgorithm.replace);
+    print("$id added");
+    return id;
+  }
+
+  // static void fetchAttendance(Attendance attendance) async{
+  //   var db = await DbHelper.openDb();
+  //   db.query(attendanceTb, columns: [])
+  // }
 }

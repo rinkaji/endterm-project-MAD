@@ -124,3 +124,24 @@ class Event {
         groupId: map[DbHelper.eventColGroupId]);
   }
 }
+
+class Attendance{
+  late int id;
+  late int group_id;
+  late int member_id;
+  late String date;
+  late String status;
+
+  Attendance({required this.id, required this.group_id, required this.member_id, required this.date, required this.status});
+  Attendance.withoutId({required this.group_id, required this.member_id, required this.date, required this.status});
+
+  Map<String, dynamic> toMapWithoutId() {
+    return {
+      DbHelper.attendanceColGroupId: group_id,
+      DbHelper.attendanceColMemberId: member_id,
+      DbHelper.attendanceDate: date,
+      DbHelper.attendanceStatus: status,
+    };
+  }
+  
+}

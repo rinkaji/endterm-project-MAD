@@ -50,7 +50,8 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   //for creating events in calendar
-  Map<DateTime, List<Event>> events = {};
+  List<Map<String, dynamic>>? allMember = [];
+  String status="";
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +88,7 @@ class _MainScreenState extends State<MainScreen> {
               icon: Icon(Icons.arrow_back)),
           centerTitle: true,
           title: Text(widget.catName.toString()),
+          actions: [TextButton(onPressed: ()=>addAttendance, child: Text("Submit"))],
         ),
         body: Column(
           children: [
@@ -102,7 +104,7 @@ class _MainScreenState extends State<MainScreen> {
                   availableGestures: AvailableGestures.all,
                   selectedDayPredicate: (day) => isSameDay(day, today),
                   focusedDay: today,
-                  firstDay: DateTime.utc(2010, 10, 16),
+                  firstDay: DateTime.now(),
                   lastDay: DateTime(2030, 3, 14),
                   onDaySelected: selectedDay,
                 ),
@@ -165,14 +167,18 @@ class _MainScreenState extends State<MainScreen> {
                         );
                       }
                       var members = snapshot.data;
+                      allMember = members;
                       return ListView.builder(
                         itemCount: members == null ? 0 : members.length,
                         itemBuilder: (BuildContext context, int index) {
                           var filtered = members![index];
                           return MainScreenTile(
+                              // addAttendance: addAttendance,
                               filtered: Participant.fromMap(filtered),
                               delMember: removeMember,
-                              updateMember: editMember);
+                              updateMember: editMember,
+                              day: today
+                              );
                         },
                       );
                     },
@@ -220,6 +226,7 @@ class _MainScreenState extends State<MainScreen> {
       DbHelper.addEvent(event);
       setState(() {});
       Navigator.pop(ctx);
+      input.clear();
     }
   }
 
@@ -252,24 +259,29 @@ class _MainScreenState extends State<MainScreen> {
             ElevatedButton(
                 onPressed: () => Navigator.pop(ctx), child: Text("Cancel")),
             ElevatedButton(
-                onPressed: () {
-                  if (editCtrl.text.isNotEmpty) {
-                    DbHelper.updateEvent(
-                      Event(
-                        id: eventId,
-                        title: editCtrl.text,
-                        date: date.toString(),
-                        groupId: id,
-                      ),
-                    );
-                    setState(() {});
-                    Navigator.pop(ctx);
-                  }
-                },
-                child: Text("Edit")),
+              onPressed: () {
+                if (editCtrl.text.isNotEmpty) {
+                  DbHelper.updateEvent(
+                    Event(
+                      id: eventId,
+                      title: editCtrl.text,
+                      date: date.toString().split(" ")[0],
+                      groupId: id,
+                    ),
+                  );
+                  setState(() {});
+                  Navigator.pop(ctx);
+                }
+              },
+              child: Text("Edit"),
+            ),
           ],
         );
       },
     );
   }
+  void addAttendance(DateTime date){
+    print("added an input");
+  }
+  
 }
