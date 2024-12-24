@@ -5,7 +5,7 @@ import 'package:path/path.dart';
 class DbHelper {
   //db constants
   static const String dbName = "attendance.db";
-  static const int dbVersion = 3;
+  static const int dbVersion = 4;
 
   //table constants
 
@@ -76,9 +76,6 @@ class DbHelper {
     $eventColGroupId INTEGER,
     FOREIGN KEY ($eventColGroupId) REFERENCES $groupTb ($groupColId) ON DELETE CASCADE ON UPDATE CASCADE
     );''';
-    //SqfliteDatabaseException (DatabaseException(table event has no column named group_id (code 1 SQLITE_ERROR): ,
-    //while compiling: INSERT INTO event (event_name, event_date, group_id) VALUES (?, ?, ?))
-    //sql 'INSERT INTO event (event_name, event_date, group_id) VALUES (?, ?, ?)' args [mskbd, 2024-12-24 00:00:00.000Z, 29])
 
     // var createEventGroupTb = '''CREATE TABLE IF NOT EXISTS $eventGroupTb(
     // $eventGroupColId INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -156,14 +153,7 @@ class DbHelper {
 
   static Future<List<Map<String, dynamic>>> fetchMember(int id) async {
     var db = await DbHelper.openDb();
-    var result = await db.query(memberTb,
-        columns: [
-          DbHelper.memberColId,
-          DbHelper.memberColGroupId,
-          DbHelper.memberColName
-        ],
-        where: '${DbHelper.memberColGroupId} = ?',
-        whereArgs: [id]);
+    var result = await db.query(memberTb,columns: [DbHelper.memberColId, DbHelper.memberColGroupId, DbHelper.memberColName], where: '${DbHelper.memberColGroupId} = ?', whereArgs: [id]);
     print('${result} member fetched');
     return result;
   }
@@ -185,7 +175,7 @@ class DbHelper {
   }
 
   //for event table queries
-  static Future<int> addEvent(Event event) async {
+  static Future<int>  addEvent(Event event) async {
     var db = await DbHelper.openDb();
     int id = await db.insert(eventTb, event.toMapWithoutId());
     print("last inserted $id");
@@ -199,6 +189,17 @@ class DbHelper {
         where: "${eventColGroupId} = ?",
         whereArgs: [groupId]);
     print("${result} member fetched");
-    return result;
+   return result;
+  }
+
+  static void deleteEvent(int id) async {
+    var db = await DbHelper.openDb();
+    await db.delete(eventTb,
+        where: '${DbHelper.eventColId} = ?', whereArgs: [id]);
+  }
+
+  static void updateEvent(Event event) async{
+    var db = await DbHelper.openDb();
+    await db.update(eventTb, event.toMap(), where: "$eventColId = ?", whereArgs: [event.id]);
   }
 }

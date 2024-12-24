@@ -88,14 +88,14 @@ class Category {
 class Event {
   late int id;
   late String title;
-  late String date;
-  late int groupId;
+  String? date;
+  int? groupId;
 
   Event(
       {required this.id,
       required this.title,
-      required this.date,
-      required this.groupId});
+       this.date,
+       this.groupId});
   Event.withoutId(
       {required this.title, required this.date, required this.groupId});
 
