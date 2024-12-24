@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/model/model.dart';
+import 'package:myapp/model/theme_selection.dart';
+import 'package:myapp/screens/reports_screen/reports_screen.dart';
 
 class MainScreenTile extends StatefulWidget {
-  MainScreenTile({
-    super.key,
-    required this.filtered,
-    required this.delMember,
-    required this.updateMember,
-  });
+  MainScreenTile(
+      {super.key,
+      required this.filtered,
+      required this.delMember,
+      required this.updateMember,
+      required this.theme
+      });
 
   final Participant filtered;
   final Function delMember;
   final Function updateMember;
+  late ThemeSelection theme;
   String dropdownValue = "Present";
 
   @override
@@ -76,45 +80,45 @@ class _MainScreenTileState extends State<MainScreenTile> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              backgroundColor: Colors.white,
-                              title: Text('Edit \"${widget.filtered.name}\"'),
-                              content: TextField(
-                                controller: memCtrl,
-                                decoration: InputDecoration(
-                                    border: OutlineInputBorder()),
-                              ),
-                              actions: [
-                                TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text('Cancel')),
-                                ElevatedButton(
-                                    onPressed: () {
-                                      widget.updateMember(Participant(
-                                          ptID: widget.filtered.ptID,
-                                          catID: widget.filtered.catID,
-                                          name: memCtrl.text));
-                                      
-                                      memCtrl.clear();
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text('Edit'))
-                              ],
-                            );
-                          });
-                    },
-                    child: ListTile(
-                      title: Text("Edit"),
-                    )),
-                GestureDetector(
+                ListTile(
+                  title: Text("Edit"),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            backgroundColor: Colors.white,
+                            title: Text('Edit \"${widget.filtered.name}\"'),
+                            content: TextField(
+                              controller: memCtrl,
+                              decoration:
+                                  InputDecoration(border: OutlineInputBorder()),
+                            ),
+                            actions: [
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Cancel')),
+                              ElevatedButton(
+                                  onPressed: () {
+                                    widget.updateMember(Participant(
+                                        ptID: widget.filtered.ptID,
+                                        catID: widget.filtered.catID,
+                                        name: memCtrl.text));
+
+                                    memCtrl.clear();
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Edit'))
+                            ],
+                          );
+                        });
+                  },
+                ),
+                ListTile(
+                  title: Text("Delete"),
                   onTap: () {
                     Navigator.of(context).pop();
                     showDialog(
@@ -139,10 +143,15 @@ class _MainScreenTileState extends State<MainScreenTile> {
                           );
                         });
                   },
-                  child: ListTile(
-                    title: Text("Delete"),
-                  ),
                 ),
+                ListTile(
+                  title: Text('Reports'),
+                  onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) => ReportsScreen(
+                            name: widget.filtered.name,
+                            theme: widget.theme,
+                          ))),
+                )
               ],
             ),
           );

@@ -68,7 +68,7 @@ class DbHelper {
       FOREIGN KEY ($attendanceColMemberId) REFERENCES $memberTb ($memberColId) ON DELETE CASCADE ON UPDATE CASCADE,
       FOREIGN KEY ($attendanceColGroupId) REFERENCES $groupTb ($groupColId) ON DELETE CASCADE ON UPDATE CASCADE
     );''';
-    
+
     var createEventTb = '''CREATE TABLE IF NOT EXISTS $eventTb(
     $eventColId INTEGER PRIMARY KEY AUTOINCREMENT,
     $eventColName VARCHAR(200),
@@ -153,7 +153,14 @@ class DbHelper {
 
   static Future<List<Map<String, dynamic>>> fetchMember(int id) async {
     var db = await DbHelper.openDb();
-    var result = await db.query(memberTb,columns: [DbHelper.memberColId, DbHelper.memberColGroupId, DbHelper.memberColName], where: '${DbHelper.memberColGroupId} = ?', whereArgs: [id]);
+    var result = await db.query(memberTb,
+        columns: [
+          DbHelper.memberColId,
+          DbHelper.memberColGroupId,
+          DbHelper.memberColName
+        ],
+        where: '${DbHelper.memberColGroupId} = ?',
+        whereArgs: [id]);
     print('${result} member fetched');
     return result;
   }
@@ -175,7 +182,7 @@ class DbHelper {
   }
 
   //for event table queries
-  static Future<int>  addEvent(Event event) async {
+  static Future<int> addEvent(Event event) async {
     var db = await DbHelper.openDb();
     int id = await db.insert(eventTb, event.toMapWithoutId());
     print("last inserted $id");
@@ -189,17 +196,23 @@ class DbHelper {
         where: "${eventColGroupId} = ?",
         whereArgs: [groupId]);
     print("${result} member fetched");
-   return result;
+    return result;
   }
 
   static void deleteEvent(int id) async {
     var db = await DbHelper.openDb();
-    await db.delete(eventTb,
-        where: '${DbHelper.eventColId} = ?', whereArgs: [id]);
+    await db
+        .delete(eventTb, where: '${DbHelper.eventColId} = ?', whereArgs: [id]);
   }
 
-  static void updateEvent(Event event) async{
+  static void updateEvent(Event event) async {
     var db = await DbHelper.openDb();
-    await db.update(eventTb, event.toMap(), where: "$eventColId = ?", whereArgs: [event.id]);
+    await db.update(eventTb, event.toMap(),
+        where: "$eventColId = ?", whereArgs: [event.id]);
   }
+
+  // static Future<List<Map<String, dynamic>>> fetchAttendanceReport() async {
+  //   var db = await DbHelper.openDb();
+  //   await db.query();
+  // }
 }

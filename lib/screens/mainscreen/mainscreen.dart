@@ -5,7 +5,6 @@ import 'package:myapp/model/theme_selection.dart';
 import 'package:myapp/screens/add_participant_screen/addParticipantScreen.dart';
 import 'package:myapp/screens/homescreen/homescreen.dart';
 import 'package:myapp/screens/mainscreen/mainscreen_tile.dart';
-import 'package:path/path.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class MainScreen extends StatefulWidget {
@@ -172,7 +171,9 @@ class _MainScreenState extends State<MainScreen> {
                           return MainScreenTile(
                               filtered: Participant.fromMap(filtered),
                               delMember: removeMember,
-                              updateMember: editMember);
+                              updateMember: editMember,
+                              theme: widget.catTheme
+                              );
                         },
                       );
                     },
