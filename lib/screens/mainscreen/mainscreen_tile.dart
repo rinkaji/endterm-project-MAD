@@ -45,6 +45,7 @@ class _MainScreenTileState extends State<MainScreenTile> {
     return GestureDetector(
       onLongPress: openDialog,
       child: Card(
+        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         child: ListTile(
           title: Text(widget.filtered.name),
           trailing: DropdownButton<String>(
@@ -67,22 +68,22 @@ class _MainScreenTileState extends State<MainScreenTile> {
                 value: "Status",
               ),
               DropdownMenuItem<String>(
-                alignment: AlignmentDirectional.center,
+                alignment: Alignment.centerLeft,
                 child: Text("Present"),
                 value: "Present",
               ),
               DropdownMenuItem<String>(
-                alignment: AlignmentDirectional.center,
+                alignment: Alignment.centerLeft,
                 child: Text("Absent"),
                 value: "Absent",
               ),
               DropdownMenuItem<String>(
-                alignment: AlignmentDirectional.center,
+                alignment: Alignment.centerLeft,
                 child: Text("Late"),
                 value: "Late",
               ),
               DropdownMenuItem<String>(
-                alignment: AlignmentDirectional.center,
+                alignment: Alignment.centerLeft,
                 child: Text("Excused"),
                 value: "Excused",
               ),
