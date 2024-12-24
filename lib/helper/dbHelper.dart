@@ -68,6 +68,7 @@ class DbHelper {
       FOREIGN KEY ($attendanceColMemberId) REFERENCES $memberTb ($memberColId) ON DELETE CASCADE ON UPDATE CASCADE,
       FOREIGN KEY ($attendanceColGroupId) REFERENCES $groupTb ($groupColId) ON DELETE CASCADE ON UPDATE CASCADE
     );''';
+    
     var createEventTb = '''CREATE TABLE IF NOT EXISTS $eventTb(
     $eventColId INTEGER PRIMARY KEY AUTOINCREMENT,
     $eventColName VARCHAR(200),
@@ -198,7 +199,6 @@ class DbHelper {
         where: "${eventColGroupId} = ?",
         whereArgs: [groupId]);
     print("${result} member fetched");
-
     return result;
   }
 }

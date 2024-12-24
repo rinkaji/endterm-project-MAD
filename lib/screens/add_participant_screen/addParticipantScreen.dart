@@ -95,7 +95,7 @@ class _AddParticipantScreenState extends State<AddParticipantScreen> {
                     child: ListTile(
                       title: Text(person.name),
                       trailing: IconButton(
-                        onPressed: participant.isEmpty
+                        onPressed: tempParticipant.isEmpty
                             ? null
                             : () => removeParticipant(person),
                         icon: Icon(
