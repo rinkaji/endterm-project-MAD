@@ -5,7 +5,7 @@ import 'package:path/path.dart';
 class DbHelper {
   //db constants
   static const String dbName = "attendance.db";
-  static const int dbVersion = 2;
+  static const int dbVersion = 3;
 
   //table constants
 
@@ -177,6 +177,7 @@ class DbHelper {
     var db = await DbHelper.openDb();
     int result = await db.delete(memberTb,
         where: '${DbHelper.memberColId} = ?', whereArgs: [id]);
+    deleteAttendance(id);
     print('${result} member updated');
     return id;
   }
@@ -211,17 +212,35 @@ class DbHelper {
         where: "$eventColId = ?", whereArgs: [event.id]);
   }
 
-
   //for attendance table queries
-  static Future<int> addAttendance(Attendance attendance) async{
+  static Future<int> addAttendance(Attendance attendance) async {
     var db = await DbHelper.openDb();
-    int id = await db.insert(attendanceTb, attendance.toMapWithoutId(), conflictAlgorithm: ConflictAlgorithm.replace);
+    int id = await db.insert(attendanceTb, attendance.toMapWithoutId(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
     print("$id added");
     return id;
   }
 
-  // static void fetchAttendance(Attendance attendance) async{
-  //   var db = await DbHelper.openDb();
-  //   db.query(attendanceTb, columns: [])
-  // }
+  static Future<List<Map>> fetchAttendance(String month, String? status, int ptId, int catId) async {
+    var db = await DbHelper.openDb();
+
+    var results = await db.query(attendanceTb,
+        columns: [
+          DbHelper.attendanceColGroupId,
+          attendanceDate,
+          attendanceStatus
+        ],
+        where: '$attendanceDate LIKE ? AND $attendanceStatus = ? AND $attendanceColMemberId = ? AND $attendanceColGroupId = ?',
+        whereArgs: ['$month', '$status', '$ptId', '$catId'],
+        orderBy: attendanceDate);
+    print("${results} attendance record fetched for ${month}");
+    return results;
+  }
+
+  static void deleteAttendance(int memberId) async {
+    var db = await DbHelper.openDb();
+    await db.delete(attendanceTb,
+        where: '$attendanceColMemberId = ?', whereArgs: [memberId]);
+  }
+  
 }

@@ -34,12 +34,9 @@ class MainScreenTile extends StatefulWidget {
 
 class _MainScreenTileState extends State<MainScreenTile> {
 
-  
-  
-
-
   var memCtrl = TextEditingController();
   @override
+  
   addAttendance(date)async{
     int id = await DbHelper.addAttendance(Attendance.withoutId(group_id: widget.filtered.catID, member_id: widget.filtered.ptID!, date: date.toString().split(" ")[0], status: widget.dropdownValue));
     return "attendance $id added to the";
@@ -175,8 +172,9 @@ class _MainScreenTileState extends State<MainScreenTile> {
                   title: Text('Reports'),
                   onTap: () => Navigator.of(context).push(MaterialPageRoute(
                       builder: (_) => ReportsScreen(
-                            name: widget.filtered.name,
+                            participant: widget.filtered,
                             theme: widget.theme,
+
                           ))),
                 )
               ],
