@@ -160,11 +160,11 @@ class _ReportsScreenState extends State<ReportsScreen> {
                           BarChartGroupData(
                             x: 0,
                             barRods: [
-                              BarChartRodData(toY: late, color: Colors.yellow)
+                              BarChartRodData(toY: absent, color: Colors.yellow)
                             ],
                           ),
                           BarChartGroupData(x: 0, barRods: [
-                            BarChartRodData(toY: absent, color: Colors.red)
+                            BarChartRodData(toY: late, color: Colors.red)
                           ]),
                           BarChartGroupData(x: 0, barRods: [
                             BarChartRodData(toY: excused, color: Colors.blue)

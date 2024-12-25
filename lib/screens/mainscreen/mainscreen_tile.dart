@@ -14,8 +14,9 @@ class MainScreenTile extends StatefulWidget {
       required this.updateMember,
       // required this.addAttendance
       required this.day,
-      required this.theme
-      required this.index});
+      required this.theme,
+      required this.index
+    });
 
 
   final Participant filtered;

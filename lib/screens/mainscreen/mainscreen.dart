@@ -87,7 +87,7 @@ class _MainScreenState extends State<MainScreen> {
               icon: Icon(Icons.arrow_back)),
           centerTitle: true,
           title: Text(widget.catName),
-          actions: [TextButton(onPressed: ()=>addAttendance, child: Text("Submit"))],
+          
         ),
         body: Column(
           children: [
