@@ -134,6 +134,7 @@ class Attendance{
 
   Attendance({required this.id, required this.group_id, required this.member_id, required this.date, required this.status});
   Attendance.withoutId({required this.group_id, required this.member_id, required this.date, required this.status});
+  Attendance.fetchStatus({required this.status});
 
   Map<String, dynamic> toMapWithoutId() {
     return {
@@ -143,5 +144,7 @@ class Attendance{
       DbHelper.attendanceStatus: status,
     };
   }
-  
+  factory Attendance.fromMap(Map<String, dynamic> map) {
+    return Attendance.fetchStatus(status: map[DbHelper.attendanceStatus]);
+  }
 }

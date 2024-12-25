@@ -177,7 +177,8 @@ class _MainScreenState extends State<MainScreen> {
                               filtered: Participant.fromMap(filtered),
                               delMember: removeMember,
                               updateMember: editMember,
-                              day: today
+                              day: today.toString().split(" ")[0],
+                              index: index,
                               );
                         },
                       );

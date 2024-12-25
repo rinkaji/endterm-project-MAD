@@ -64,7 +64,7 @@ class DbHelper {
       $attendanceColGroupId INTEGER, 
       $attendanceDate TEXT,
       $attendanceStatus TEXT,
-      PRIMARY KEY($attendanceColGroupId, $attendanceColMemberId),
+      PRIMARY KEY($attendanceColGroupId, $attendanceColMemberId, $attendanceDate),
       FOREIGN KEY ($attendanceColMemberId) REFERENCES $memberTb ($memberColId) ON DELETE CASCADE ON UPDATE CASCADE,
       FOREIGN KEY ($attendanceColGroupId) REFERENCES $groupTb ($groupColId) ON DELETE CASCADE ON UPDATE CASCADE
     );''';
@@ -210,6 +210,13 @@ class DbHelper {
     int id = await db.insert(attendanceTb, attendance.toMapWithoutId(), conflictAlgorithm: ConflictAlgorithm.replace);
     print("$id added");
     return id;
+  }
+
+  static Future<List<Map<String, Object?>>> fetchStatus(member_id, group_id, date) async{
+    var db = await DbHelper.openDb();
+    var result =  db.query(attendanceTb, columns: [attendanceStatus], where: "$attendanceColMemberId = ? AND $attendanceColGroupId = ? AND $attendanceDate = ?", whereArgs: [member_id, group_id, date]);
+    print(result);
+    return result;
   }
 
   // static void fetchAttendance(Attendance attendance) async{
