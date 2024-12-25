@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-
 import 'package:myapp/model/model.dart';
 import 'package:myapp/model/theme_selection.dart';
 import 'package:myapp/screens/mainscreen/mainscreen.dart';
-import 'package:myapp/screens/reports_screen/reports_screen.dart';
 
 class HomeScreenCard extends StatelessWidget {
   HomeScreenCard(

@@ -12,7 +12,6 @@ class MainScreenTile extends StatefulWidget {
       required this.filtered,
       required this.delMember,
       required this.updateMember,
-      // required this.addAttendance
       required this.day,
       required this.theme,
       required this.index
@@ -22,7 +21,6 @@ class MainScreenTile extends StatefulWidget {
   final Participant filtered;
   final Function delMember;
   final Function updateMember;
-  // final Function addAttendance;
   late ThemeSelection theme;
   final String day;
   final int index;
@@ -35,7 +33,7 @@ class _MainScreenTileState extends State<MainScreenTile> {
   List<Map<String, Object?>> test = [];
   String dropdownValue = "Status";
   var memCtrl = TextEditingController();
-  @override
+  
   addAttendance(date) async {
     int id = await DbHelper.addAttendance(Attendance.withoutId(
         group_id: widget.filtered.catID,
@@ -47,23 +45,19 @@ class _MainScreenTileState extends State<MainScreenTile> {
 
   Future<List<Map<String, Object?>>>? fetchStatus() async {
     var result = await DbHelper.fetchStatus(
-        widget.filtered.ptID, widget.filtered.catID, widget.day);
+        widget.filtered.ptID!, widget.filtered.catID, widget.day);
     return result;
   }
 
   Future<String>convertFutureToString(
       Future<List<Map<String, Object?>>>? futureListMap) async {
     try {
-      // Wait for the Future to resolve.
       List<Map<String, Object?>> listMap = await futureListMap!;
-
-      // Convert the List<Map<String, Object?>> to a String.
-      // You can format the data as needed. This example just converts it to a JSON-like string.
       var result = listMap[0];
       var anotherResult = Attendance.fromMap(result);
       return anotherResult.status;
     } catch (e) {
-      return "Error: $e"; // Return an error string in case of failure.
+      return "Error: $e"; 
     }
   }
 
@@ -134,9 +128,6 @@ class _MainScreenTileState extends State<MainScreenTile> {
                 ],
               );
             },
-            // builder:(build){
-            //
-            // }
           ),
         ),
       ),

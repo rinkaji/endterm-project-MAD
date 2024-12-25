@@ -3,13 +3,9 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 class DbHelper {
-  //db constants
   static const String dbName = "attendance.db";
-  static const int dbVersion = 3;
+  static const int dbVersion = 1;
 
-  //table constants
-
-  //group table
   static const String groupTb = "groups";
   static const String groupColId = 'group_id';
   static const String groupColName = 'group_name';
@@ -17,13 +13,11 @@ class DbHelper {
   static const String groupColSubj = 'group_subj';
   static const String groupColSubSection = 'group_subsection';
 
-  // members table
   static const String memberTb = "members";
   static const String memberColId = 'member_id';
   static const String memberColName = "member_name";
   static const String memberColGroupId = "group_id";
 
-  // attendance table
   static const String attendanceTb = "attendance";
   static const String attendanceColId = "attendance_id";
   static const String attendanceColMemberId = "attendance_member_id";
@@ -31,18 +25,11 @@ class DbHelper {
   static const String attendanceDate = "attendance_date";
   static const String attendanceStatus = "attendance_status";
 
-  //events table
   static const String eventTb = "event";
   static const String eventColId = "event_id";
   static const String eventColName = "event_name";
   static const String eventColDate = "event_date";
   static const String eventColGroupId = "event_group_id";
-
-  // //events_in_group table
-  // static const String eventGroupTb = "event_group";
-  // static const String eventGroupColId = "event_group_id";
-  // static const String eventGroupColGroupId = "group_id";
-  // static const String eventGroupColEventId = "event_id";
 
   static Future<Database> openDb() async {
     var path = join(await getDatabasesPath(), dbName);
@@ -77,11 +64,6 @@ class DbHelper {
     FOREIGN KEY ($eventColGroupId) REFERENCES $groupTb ($groupColId) ON DELETE CASCADE ON UPDATE CASCADE
     );''';
 
-    // var createEventGroupTb = '''CREATE TABLE IF NOT EXISTS $eventGroupTb(
-    // $eventGroupColId INTEGER PRIMARY KEY AUTOINCREMENT,
-    // $eventGroupColGroupId INT,
-    // $eventGroupColEventId INT
-    // );''';
     var db = await openDatabase(
       path,
       version: dbVersion,
@@ -94,8 +76,6 @@ class DbHelper {
         print("$attendanceTb created");
         db.execute(createEventTb);
         print("$eventTb created");
-        // db.execute(createEventGroupTb);
-        // print("$eventGroupTb created");
       },
       onUpgrade: (db, oldVersion, newVersion) {
         if (newVersion <= oldVersion) return;
@@ -107,8 +87,6 @@ class DbHelper {
         db.execute(createAttendanceTb);
         db.execute("DROP TABLE IF EXISTS $eventTb");
         db.execute(createEventTb);
-        // db.execute("DROP TABLE IF EXISTS $eventGroupTb");
-        // db.execute(createEventGroupTb);
         print("dropped and new table created");
       },
     );
@@ -142,6 +120,7 @@ class DbHelper {
     final db = await openDb();
     await db
         .delete(groupTb, where: "$groupColId = ?", whereArgs: [category.id]);
+    await deleteMember(category.id);
   }
 
   static Future<int> addMember(Participant participant) async {
@@ -177,12 +156,11 @@ class DbHelper {
     var db = await DbHelper.openDb();
     int result = await db.delete(memberTb,
         where: '${DbHelper.memberColId} = ?', whereArgs: [id]);
-    deleteAttendance(id);
+    await deleteAttendance(memberId: id);
     print('${result} member updated');
     return id;
   }
 
-  //for event table queries
   static Future<int> addEvent(Event event) async {
     var db = await DbHelper.openDb();
     int id = await db.insert(eventTb, event.toMapWithoutId());
@@ -212,7 +190,6 @@ class DbHelper {
         where: "$eventColId = ?", whereArgs: [event.id]);
   }
 
-  //for attendance table queries
   static Future<int> addAttendance(Attendance attendance) async {
     var db = await DbHelper.openDb();
     int id = await db.insert(attendanceTb, attendance.toMapWithoutId(),
@@ -221,33 +198,44 @@ class DbHelper {
     return id;
   }
 
-  static Future<List<Map>> fetchAttendance(String month, String? status, int ptId, int catId) async {
+  static Future<List<Map>> fetchAttendance(
+      String month, String? status, int ptId, int catId) async {
     var db = await DbHelper.openDb();
 
     var results = await db.query(attendanceTb,
-        columns: [
-          DbHelper.attendanceColGroupId,
-          attendanceDate,
-          attendanceStatus
-        ],
-        where: '$attendanceDate LIKE ? AND $attendanceStatus = ? AND $attendanceColMemberId = ? AND $attendanceColGroupId = ?',
-        whereArgs: ['$month', '$status', '$ptId', '$catId'],
+        columns: [attendanceStatus, attendanceDate],
+        where:
+            '$attendanceDate LIKE ? AND $attendanceStatus = ? AND $attendanceColMemberId = ? AND $attendanceColGroupId = ?',
+        whereArgs: ['%-$month-%', '$status', ptId, catId],
         orderBy: attendanceDate);
-    print("${results} attendance record fetched for ${month}");
+    print("${results}  attendance record fetched for ${month}");
     return results;
   }
 
-  static void deleteAttendance(int memberId) async {
+  static Future<void> deleteAttendance({int? memberId, int? catId}) async {
     var db = await DbHelper.openDb();
-    await db.delete(attendanceTb,
-        where: '$attendanceColMemberId = ?', whereArgs: [memberId]);
+    String? where;
+    List whereArgs;
+
+    if (memberId != null) {
+      where = '$attendanceColMemberId = ?';
+      whereArgs = ['$memberId'];
+    } else {
+      where = '$attendanceColGroupId = ?';
+      whereArgs = ['$catId'];
+    }
+    await db.delete(attendanceTb, where: where, whereArgs: whereArgs);
   }
 
-  static Future<List<Map<String, Object?>>> fetchStatus(member_id, group_id, date) async{
+  static Future<List<Map<String, Object?>>> fetchStatus(
+      int memberId, int groupId, String date) async {
     var db = await DbHelper.openDb();
-    var result =  db.query(attendanceTb, columns: [attendanceStatus], where: "$attendanceColMemberId = ? AND $attendanceColGroupId = ? AND $attendanceDate = ?", whereArgs: [member_id, group_id, date]);
+    var result = await db.query(attendanceTb,
+        columns: [attendanceStatus],
+        where:
+            "$attendanceColMemberId = ? AND $attendanceColGroupId = ? AND $attendanceDate = ?",
+        whereArgs: [memberId, groupId, date]);
     print(result);
     return result;
   }
-
 }

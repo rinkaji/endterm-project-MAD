@@ -40,7 +40,6 @@ class _MainScreenState extends State<MainScreen> {
     return members;
   }
 
-  //for calendar day selection
   var today = DateTime.now();
   void selectedDay(DateTime day, DateTime focusedDay) {
     setState(() {
@@ -48,7 +47,6 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  //for creating events in calendar
   List<Map<String, dynamic>>? allMember = [];
   String status="";
 
@@ -172,7 +170,6 @@ class _MainScreenState extends State<MainScreen> {
                         itemBuilder: (BuildContext context, int index) {
                           var filtered = members![index];
                           return MainScreenTile(
-                              // addAttendance: addAttendance,
                               filtered: Participant.fromMap(filtered),
                               delMember: removeMember,
                               updateMember: editMember,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/data/data.dart';
 import 'package:myapp/helper/dbHelper.dart';
 import 'package:myapp/model/model.dart';
 import 'package:myapp/model/theme_selection.dart';
@@ -37,7 +36,7 @@ class _AddParticipantScreenState extends State<AddParticipantScreen> {
           ),
         ),
         title: Text(
-          "Create Group",
+          "Create Members",
           style: TextStyle(fontWeight: FontWeight.w500, fontSize: 20),
         ),
         actions: [

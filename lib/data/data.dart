@@ -1,5 +1,3 @@
-import 'package:myapp/model/model.dart';
-
 class Attendance {
   int? attendanceId;
   late int memberId;
