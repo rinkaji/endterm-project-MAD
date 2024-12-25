@@ -177,7 +177,8 @@ class _MainScreenState extends State<MainScreen> {
                               delMember: removeMember,
                               updateMember: editMember,
                               theme: widget.catTheme,
-                              day: today
+                              day: today.toString().split(" ")[0],
+                              index: index,
                               );
                         },
                       );
