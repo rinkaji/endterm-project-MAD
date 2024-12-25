@@ -5,7 +5,7 @@ import 'package:path/path.dart';
 class DbHelper {
   //db constants
   static const String dbName = "attendance.db";
-  static const int dbVersion = 2;
+  static const int dbVersion = 3;
 
   //table constants
 
@@ -68,7 +68,7 @@ class DbHelper {
       FOREIGN KEY ($attendanceColMemberId) REFERENCES $memberTb ($memberColId) ON DELETE CASCADE ON UPDATE CASCADE,
       FOREIGN KEY ($attendanceColGroupId) REFERENCES $groupTb ($groupColId) ON DELETE CASCADE ON UPDATE CASCADE
     );''';
-    
+
     var createEventTb = '''CREATE TABLE IF NOT EXISTS $eventTb(
     $eventColId INTEGER PRIMARY KEY AUTOINCREMENT,
     $eventColName VARCHAR(200),
@@ -153,7 +153,14 @@ class DbHelper {
 
   static Future<List<Map<String, dynamic>>> fetchMember(int id) async {
     var db = await DbHelper.openDb();
-    var result = await db.query(memberTb,columns: [DbHelper.memberColId, DbHelper.memberColGroupId, DbHelper.memberColName], where: '${DbHelper.memberColGroupId} = ?', whereArgs: [id]);
+    var result = await db.query(memberTb,
+        columns: [
+          DbHelper.memberColId,
+          DbHelper.memberColGroupId,
+          DbHelper.memberColName
+        ],
+        where: '${DbHelper.memberColGroupId} = ?',
+        whereArgs: [id]);
     print('${result} member fetched');
     return result;
   }
@@ -170,12 +177,13 @@ class DbHelper {
     var db = await DbHelper.openDb();
     int result = await db.delete(memberTb,
         where: '${DbHelper.memberColId} = ?', whereArgs: [id]);
+    deleteAttendance(id);
     print('${result} member updated');
     return id;
   }
 
   //for event table queries
-  static Future<int>  addEvent(Event event) async {
+  static Future<int> addEvent(Event event) async {
     var db = await DbHelper.openDb();
     int id = await db.insert(eventTb, event.toMapWithoutId());
     print("last inserted $id");
@@ -189,27 +197,50 @@ class DbHelper {
         where: "${eventColGroupId} = ?",
         whereArgs: [groupId]);
     print("${result} member fetched");
-   return result;
+    return result;
   }
 
   static void deleteEvent(int id) async {
     var db = await DbHelper.openDb();
-    await db.delete(eventTb,
-        where: '${DbHelper.eventColId} = ?', whereArgs: [id]);
+    await db
+        .delete(eventTb, where: '${DbHelper.eventColId} = ?', whereArgs: [id]);
   }
 
-  static void updateEvent(Event event) async{
+  static void updateEvent(Event event) async {
     var db = await DbHelper.openDb();
-    await db.update(eventTb, event.toMap(), where: "$eventColId = ?", whereArgs: [event.id]);
+    await db.update(eventTb, event.toMap(),
+        where: "$eventColId = ?", whereArgs: [event.id]);
   }
-
 
   //for attendance table queries
-  static Future<int> addAttendance(Attendance attendance) async{
+  static Future<int> addAttendance(Attendance attendance) async {
     var db = await DbHelper.openDb();
-    int id = await db.insert(attendanceTb, attendance.toMapWithoutId(), conflictAlgorithm: ConflictAlgorithm.replace);
+    int id = await db.insert(attendanceTb, attendance.toMapWithoutId(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
     print("$id added");
     return id;
+  }
+
+  static Future<List<Map>> fetchAttendance(String month, String? status, int ptId, int catId) async {
+    var db = await DbHelper.openDb();
+
+    var results = await db.query(attendanceTb,
+        columns: [
+          DbHelper.attendanceColGroupId,
+          attendanceDate,
+          attendanceStatus
+        ],
+        where: '$attendanceDate LIKE ? AND $attendanceStatus = ? AND $attendanceColMemberId = ? AND $attendanceColGroupId = ?',
+        whereArgs: ['$month', '$status', '$ptId', '$catId'],
+        orderBy: attendanceDate);
+    print("${results} attendance record fetched for ${month}");
+    return results;
+  }
+
+  static void deleteAttendance(int memberId) async {
+    var db = await DbHelper.openDb();
+    await db.delete(attendanceTb,
+        where: '$attendanceColMemberId = ?', whereArgs: [memberId]);
   }
 
   static Future<List<Map<String, Object?>>> fetchStatus(member_id, group_id, date) async{
@@ -219,8 +250,4 @@ class DbHelper {
     return result;
   }
 
-  // static void fetchAttendance(Attendance attendance) async{
-  //   var db = await DbHelper.openDb();
-  //   db.query(attendanceTb, columns: [])
-  // }
 }

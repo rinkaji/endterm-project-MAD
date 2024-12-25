@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/helper/dbHelper.dart';
 import 'package:myapp/model/model.dart';
+import 'package:myapp/model/theme_selection.dart';
+import 'package:myapp/screens/reports_screen/reports_screen.dart';
 
 List membersStatus = [];
 
@@ -12,12 +14,15 @@ class MainScreenTile extends StatefulWidget {
       required this.updateMember,
       // required this.addAttendance
       required this.day,
+      required this.theme
       required this.index});
+
 
   final Participant filtered;
   final Function delMember;
   final Function updateMember;
   // final Function addAttendance;
+  late ThemeSelection theme;
   final String day;
   final int index;
 
@@ -139,14 +144,15 @@ class _MainScreenTileState extends State<MainScreenTile> {
 
   void openDialog() {
     showDialog(
-      context: context,
-      builder: (context) {
-        return Dialog(
-          backgroundColor: Colors.white,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              GestureDetector(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            backgroundColor: Colors.white,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  title: Text("Edit"),
                   onTap: () {
                     Navigator.of(context).pop();
                     showDialog(
@@ -181,43 +187,46 @@ class _MainScreenTileState extends State<MainScreenTile> {
                           );
                         });
                   },
-                  child: ListTile(
-                    title: Text("Edit"),
-                  )),
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).pop();
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: Text(
-                            'Are you sure you want to delete \"${widget.filtered.name}\"?'),
-                        actions: [
-                          TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Text('Cancel')),
-                          ElevatedButton(
-                              onPressed: () {
-                                widget.delMember(widget.filtered.ptID);
-                                Navigator.of(context).pop();
-                              },
-                              child: Text('Delete'))
-                        ],
-                      );
-                    },
-                  );
-                },
-                child: ListTile(
-                  title: Text("Delete"),
                 ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
+                ListTile(
+                  title: Text("Delete"),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text(
+                                'Are you sure you want to delete \"${widget.filtered.name}\"?'),
+                            actions: [
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Cancel')),
+                              ElevatedButton(
+                                  onPressed: () {
+                                    widget.delMember(widget.filtered.ptID);
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Delete'))
+                            ],
+                          );
+                        });
+                  },
+                ),
+                ListTile(
+                  title: Text('Reports'),
+                  onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) => ReportsScreen(
+                            participant: widget.filtered,
+                            theme: widget.theme,
+
+                          ))),
+                )
+              ],
+            ),
+          );
+        });
   }
 }

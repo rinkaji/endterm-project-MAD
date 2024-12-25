@@ -5,7 +5,6 @@ import 'package:myapp/model/theme_selection.dart';
 import 'package:myapp/screens/add_participant_screen/addParticipantScreen.dart';
 import 'package:myapp/screens/homescreen/homescreen.dart';
 import 'package:myapp/screens/mainscreen/mainscreen_tile.dart';
-import 'package:path/path.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class MainScreen extends StatefulWidget {
@@ -87,7 +86,7 @@ class _MainScreenState extends State<MainScreen> {
               },
               icon: Icon(Icons.arrow_back)),
           centerTitle: true,
-          title: Text(widget.catName.toString()),
+          title: Text(widget.catName),
           actions: [TextButton(onPressed: ()=>addAttendance, child: Text("Submit"))],
         ),
         body: Column(
@@ -177,6 +176,7 @@ class _MainScreenState extends State<MainScreen> {
                               filtered: Participant.fromMap(filtered),
                               delMember: removeMember,
                               updateMember: editMember,
+                              theme: widget.catTheme,
                               day: today.toString().split(" ")[0],
                               index: index,
                               );
