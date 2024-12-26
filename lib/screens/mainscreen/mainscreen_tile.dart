@@ -54,11 +54,7 @@ class _MainScreenTileState extends State<MainScreenTile> {
   Future<String>convertFutureToString(
       Future<List<Map<String, Object?>>>? futureListMap) async {
     try {
-      // Wait for the Future to resolve.
       List<Map<String, Object?>> listMap = await futureListMap!;
-
-      // Convert the List<Map<String, Object?>> to a String.
-      // You can format the data as needed. This example just converts it to a JSON-like string.
       var result = listMap[0];
       var anotherResult = Attendance.fromMap(result);
       return anotherResult.status;
