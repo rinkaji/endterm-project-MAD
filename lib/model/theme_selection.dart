@@ -9,7 +9,6 @@ enum ThemeSelection {
 }
 
 extension ThemeSelectionExtension on ThemeSelection {
-  //get the color
   Color get color {
     switch (this) {
       case ThemeSelection.Sky:
@@ -25,7 +24,6 @@ extension ThemeSelectionExtension on ThemeSelection {
     }
   }
 
-  //get the associated icon
   Icon get icon {
     switch (this) {
       case ThemeSelection.Sky:

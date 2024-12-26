@@ -20,27 +20,24 @@ class _ReportsScreenState extends State<ReportsScreen> {
   double late = 0;
   double absent = 0;
   double excused = 0;
-  List test = [];
 
   Future<void> presentAtt() async {
-    present = ((await DbHelper.fetchAttendance('2024-$dropDownValue-%', 'Present',
+    present = ((await DbHelper.fetchAttendance('$dropDownValue', 'Present',
                 widget.participant.ptID!, widget.participant.catID))
             .length)
         .toDouble();
-    late = ((await DbHelper.fetchAttendance('2024-$dropDownValue-%', 'Absent',
+    late = ((await DbHelper.fetchAttendance('$dropDownValue', 'Absent',
                 widget.participant.ptID!, widget.participant.catID))
             .length)
         .toDouble();
-    absent = ((await DbHelper.fetchAttendance('2024-$dropDownValue-%', 'Late',
+    absent = ((await DbHelper.fetchAttendance('$dropDownValue', 'Late',
                 widget.participant.ptID!, widget.participant.catID))
             .length)
         .toDouble();
-    excused = ((await DbHelper.fetchAttendance('2024-$dropDownValue-%', 'Excused',
+    excused = ((await DbHelper.fetchAttendance('$dropDownValue', 'Excused',
                 widget.participant.ptID!, widget.participant.catID))
             .length)
         .toDouble();
-    test = await DbHelper.fetchAttendance('2024-$dropDownValue-%', 'Excused',
-        widget.participant.ptID!, widget.participant.catID);
     setState(() {});
   }
 
@@ -87,10 +84,58 @@ class _ReportsScreenState extends State<ReportsScreen> {
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               
               SizedBox(
                 height: 10,
+              ),
+              
+              Center(
+                child: AspectRatio(
+                  aspectRatio: 2.0,
+                  child: BarChart(
+                    BarChartData(
+                      barTouchData: BarTouchData(
+
+                      ),
+                        titlesData: FlTitlesData(
+                          show: true,
+                          bottomTitles: AxisTitles(
+                              sideTitles: SideTitles(
+                                  showTitles: true,
+                                  getTitlesWidget: bottomTitles)),
+                          topTitles: AxisTitles(
+                              sideTitles: SideTitles(
+                                  showTitles: true,
+                                  getTitlesWidget: bottomTitles)),
+                          rightTitles: AxisTitles(
+                              sideTitles: SideTitles(
+                                  showTitles: true,
+                                  getTitlesWidget: bottomTitles)),
+                        ),
+                        barGroups: [
+                          BarChartGroupData(x: 0, barRods: [
+                            BarChartRodData(toY: present, color: Colors.green)
+                          ]),
+                          BarChartGroupData(
+                            
+                            x: 0,
+                            barRods: [
+                              BarChartRodData(
+                                
+                                toY: absent, color: Colors.yellow)
+                            ],
+                          ),
+                          BarChartGroupData(x: 0, barRods: [
+                            BarChartRodData(toY: late, color: Colors.red)
+                          ]),
+                          BarChartGroupData(x: 0, barRods: [
+                            BarChartRodData(toY: excused, color: Colors.blue)
+                          ]),
+                        ]),
+                  ),
+                ),
               ),
               const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -133,46 +178,9 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   ),
                 ],
               ),
-              Center(
-                child: AspectRatio(
-                  aspectRatio: 2.0,
-                  child: BarChart(
-                    BarChartData(
-                        titlesData: FlTitlesData(
-                          show: true,
-                          bottomTitles: AxisTitles(
-                              sideTitles: SideTitles(
-                                  showTitles: true,
-                                  getTitlesWidget: bottomTitles)),
-                          topTitles: AxisTitles(
-                              sideTitles: SideTitles(
-                                  showTitles: true,
-                                  getTitlesWidget: bottomTitles)),
-                          rightTitles: AxisTitles(
-                              sideTitles: SideTitles(
-                                  showTitles: true,
-                                  getTitlesWidget: bottomTitles)),
-                        ),
-                        barGroups: [
-                          BarChartGroupData(x: 0, barRods: [
-                            BarChartRodData(toY: present, color: Colors.green)
-                          ]),
-                          BarChartGroupData(
-                            x: 0,
-                            barRods: [
-                              BarChartRodData(toY: absent, color: Colors.yellow)
-                            ],
-                          ),
-                          BarChartGroupData(x: 0, barRods: [
-                            BarChartRodData(toY: late, color: Colors.red)
-                          ]),
-                          BarChartGroupData(x: 0, barRods: [
-                            BarChartRodData(toY: excused, color: Colors.blue)
-                          ]),
-                        ]),
-                  ),
-                ),
-              ),
+              SizedBox(height: 15,),
+              Text('Attendance report for this',style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),),
+              SizedBox(height: 10,),
               DropdownButton(
                   value: dropDownValue,
                   items: const [

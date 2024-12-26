@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:myapp/helper/dbHelper.dart';
 import 'package:myapp/model/theme_selection.dart';
 
@@ -84,7 +83,6 @@ class Category {
   Color get color => theme.color;
 }
 
-//for event Class
 class Event {
   late int id;
   late String title;

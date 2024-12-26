@@ -29,7 +29,6 @@ class _HomescreenState extends State<Homescreen> {
     DbHelper.updateGroup(category);
     setState(() {});
   }
-  
 
   @override
   Widget build(BuildContext context) {
